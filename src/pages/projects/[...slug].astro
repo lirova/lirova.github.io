@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const d = project.data;
+---
+
+<Base title={`${d.title} — Portfolio`} description={d.summary}>
+  <article class="detail wrap">
+    <a href="/#work" class="back">← Back to work</a>
+
+    {d.domain && <p class="domain" style="color:var(--accent-dim);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;margin:0 0 8px;">{d.domain}</p>}
+    <h1>{d.title}</h1>
+    <div class="meta">
+      <span class="role">{d.role}</span>
+      {d.year && <span>{d.year}</span>}
+      <span>{d.stack.join(' · ')}</span>
+    </div>
+
+    {d.highlights.length > 0 && (
+      <ul class="highlights">
+        {d.highlights.map((h) => <li>{h}</li>)}
+      </ul>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {d.link && (
+      <p style="margin-top:32px;"><a href={d.link} target="_blank" rel="noopener">View project ↗</a></p>
+    )}
+  </article>
+</Base>

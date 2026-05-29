@@ -1,0 +1,19 @@
+---
+interface Props {
+  title: string;
+  summary: string;
+  domain?: string;
+  stack: string[];
+  slug: string;
+}
+const { title, summary, domain, stack, slug } = Astro.props;
+---
+
+<a class="card" href={`/projects/${slug}`}>
+  {domain && <p class="domain">{domain}</p>}
+  <h3>{title}</h3>
+  <p class="summary">{summary}</p>
+  <div class="tags">
+    {stack.slice(0, 5).map((s) => <span class="tag">{s}</span>)}
+  </div>
+</a>
