@@ -25,6 +25,29 @@ const projects = (await getCollection('projects'))
     </div>
   </section>
 
+  <section id="demo" class="section wrap">
+    <h2 class="section-title">See it work</h2>
+    <p style="max-width:60ch;margin:0 0 1.5rem;opacity:.8;">
+      A labeled bug report &mdash; fixed, reviewed, and merged by autonomous
+      agents, with no human keystrokes in the common case. 46 seconds,
+      start to finish:
+    </p>
+    <video
+      controls
+      preload="metadata"
+      poster="/daki-demo-poster.jpg"
+      style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:block;"
+    >
+      <source src="/daki-demo.mp4" type="video/mp4" />
+      Your browser doesn&apos;t support embedded video &mdash;
+      <a href="/daki-demo.mp4">download the clip</a>.
+    </video>
+    <p style="margin:1.5rem 0 0;font-size:1.1rem;">
+      Want this running in your stack?
+      <a href="https://github.com/lirova" target="_blank" rel="noopener">Get in touch &rarr;</a>
+    </p>
+  </section>
+
   <section id="work" class="section wrap">
     <h2 class="section-title">Selected work</h2>
     <div class="grid">
