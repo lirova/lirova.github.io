@@ -19,40 +19,75 @@ const projects = (await getCollection('projects'))
   </section>
 
   <section id="demo" class="section wrap">
-    <h2 class="section-title">See it work</h2>
-    <p style="max-width:60ch;margin:0 0 1.5rem;opacity:.8;">
-      A labeled feature request &mdash; built, validated, tested, reviewed,
-      and merged by autonomous agents, with no human keystrokes. 45 seconds,
-      start to finish:
+    <h2 class="section-title">See them work</h2>
+    <p style="max-width:62ch;margin:0 0 2.2rem;opacity:.8;">
+      Three systems, all real, all running in production today. Real screens,
+      no mockups &mdash; under 30 seconds each.
+    </p>
+
+    <h3 style="margin:0 0 .4rem;">daki &mdash; issues in, reviewed merges out</h3>
+    <p style="max-width:62ch;margin:0 0 1.2rem;opacity:.8;">
+      Label a GitHub issue and walk away: an agent takes it, writes the fix,
+      opens a PR, reviews it against the tests, and merges. No human keystrokes.
+      This footage is a real, unedited run:
     </p>
     <video
       controls
       preload="metadata"
-      poster="/daki-demo-poster.jpg"
+      poster="/daki-demo-v3-poster.jpg"
       style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:block;"
     >
-      <source src="/daki-demo.mp4?v=2" type="video/mp4" />
-      Your browser doesn&apos;t support embedded video &mdash;
-      <a href="/daki-demo.mp4?v=2">download the clip</a>.
+      <source src="/daki-demo-v3.mp4" type="video/mp4" />
+      <a href="/daki-demo-v3.mp4">download the clip</a>.
     </video>
-    <p style="max-width:60ch;margin:2.6rem 0 1.4rem;opacity:.8;">
-      A second pipeline &mdash; <strong>workbank</strong>: scattered asks from
-      Gmail, Calendar, GitHub, and Slack, read by AI into one board of what
-      actually needs you. Clear one and it archives at the source:
+
+    <h3 style="margin:2.8rem 0 .4rem;">workbank &mdash; one board of what actually needs you</h3>
+    <p style="max-width:62ch;margin:0 0 1.2rem;opacity:.8;">
+      Email, calendar, GitHub, GitLab, Slack &mdash; read by AI into a single
+      task board. It plans your day around your real hours, learns your pace,
+      and keeps everything in an encrypted bank on your own machine:
     </p>
     <video
       controls
       preload="metadata"
-      poster="/workbank-demo-poster.jpg"
+      poster="/workbank-demo-v2-poster.jpg"
       style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:block;"
     >
-      <source src="/workbank-demo.mp4?v=2" type="video/mp4" />
-      <a href="/workbank-demo.mp4?v=2">download the clip</a>.
+      <source src="/workbank-demo-v2.mp4" type="video/mp4" />
+      <a href="/workbank-demo-v2.mp4">download the clip</a>.
     </video>
-    <p style="margin:1.5rem 0 0;font-size:1.1rem;">
-      Want this running in your stack?
-      <a href="https://github.com/lirova" target="_blank" rel="noopener">Get in touch &rarr;</a>
+
+    <h3 style="margin:2.8rem 0 .4rem;">voicebot &mdash; your work, narrated</h3>
+    <p style="max-width:62ch;margin:0 0 1.2rem;opacity:.8;">
+      Every agent session and inbox summary, read aloud to your phone in a
+      per-project voice &mdash; and you can talk back. Built for hands-free
+      operating: commutes, workshops, anywhere your screen isn&apos;t:
     </p>
+    <video
+      controls
+      preload="metadata"
+      poster="/voicebot-demo-v1-poster.jpg"
+      style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:block;"
+    >
+      <source src="/voicebot-demo-v1.mp4" type="video/mp4" />
+      <a href="/voicebot-demo-v1.mp4">download the clip</a>.
+    </video>
+  </section>
+
+  <section id="contact" class="section wrap" style="text-align:center;">
+    <h2 class="section-title" style="margin-bottom:.6rem;">Something in your stack should run itself.</h2>
+    <p style="max-width:54ch;margin:0 auto 1.6rem;opacity:.8;">
+      Issue triage, deploy pipelines, inbox overload, status reporting &mdash;
+      if a human is doing it on a schedule, it&apos;s a candidate. Tell me what
+      it is, and I&apos;ll tell you how I&apos;d automate it.
+    </p>
+    <a
+      href="https://github.com/lirova"
+      target="_blank"
+      rel="noopener"
+      style="display:inline-block;padding:.85rem 1.8rem;border-radius:10px;background:#4fd1a5;color:#0a0a0a;font-weight:700;text-decoration:none;font-size:1.05rem;"
+    >Start the conversation &rarr;</a>
+    <p style="margin:1rem 0 0;font-size:.85rem;opacity:.55;">github.com/lirova</p>
   </section>
 
   <section id="work" class="section wrap">
