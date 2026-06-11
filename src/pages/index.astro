@@ -16,7 +16,40 @@ const projects = (await getCollection('projects'))
       <a href="/#demo">↓ Watch it work</a>
       <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
+    <p
+      id="live-proof"
+      hidden
+      style="margin-top:1.4rem;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;opacity:.75;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;"
+    >
+      <span style="width:.55rem;height:.55rem;border-radius:50%;background:#4fd1a5;box-shadow:0 0 6px #4fd1a5;flex:none;"></span>
+      <span id="live-proof-text"></span>
+    </p>
   </section>
+
+  <script>
+    // Live proof: the agent pipeline publishes its own run stats to a public
+    // gist on a schedule; render them. If the fetch fails, the strip stays hidden.
+    const PROOF_URL =
+      'https://gist.githubusercontent.com/lirova/f28d2d5303e3a17c6243760f018395a1/raw/daki-proof.json';
+    fetch(PROOF_URL, { cache: 'no-cache' })
+      .then((r) => r.json())
+      .then((d) => {
+        const mins = Math.max(
+          0,
+          Math.round((Date.now() - new Date(d.last_pipeline_run_at).getTime()) / 60000)
+        );
+        const ago =
+          mins < 90 ? `${mins} min ago` : `${Math.round(mins / 60)} h ago`;
+        const el = document.getElementById('live-proof-text');
+        if (!el || !d.agent_prs_merged) return;
+        el.textContent =
+          `LIVE — the agent pipeline below is running right now: ` +
+          `${d.agent_prs_merged} issues turned into merged PRs unattended · ` +
+          `last run ${ago} · self-published stats`;
+        document.getElementById('live-proof').hidden = false;
+      })
+      .catch(() => {});
+  </script>
 
   <section id="demo" class="section wrap">
     <h2 class="section-title">See them work</h2>
@@ -40,6 +73,20 @@ const projects = (await getCollection('projects'))
       <source src="/daki-demo-v3.mp4" type="video/mp4" />
       <a href="/daki-demo-v3.mp4">download the clip</a>.
     </video>
+    <a
+      href="https://lirova.github.io/daki-playground/"
+      target="_blank"
+      rel="noopener"
+      style="display:block;margin:1.1rem 0 0;padding:1rem 1.3rem;border:1px solid #4fd1a5;border-radius:12px;text-decoration:none;color:inherit;background:rgba(79,209,165,.07);"
+    >
+      <strong style="color:#4fd1a5;">🎨 Don&apos;t take the video&apos;s word for it &mdash; drive the pipeline yourself &rarr;</strong>
+      <span style="display:block;margin-top:.35rem;opacity:.8;font-size:.95rem;">
+        The <strong>daki playground</strong> is this exact loop, live and open to
+        anyone: describe a change to a web page in plain English, and watch an
+        agent turn it into a reviewed, auto-merged PR that repaints the page
+        &mdash; in about a minute.
+      </span>
+    </a>
 
     <h3 style="margin:2.8rem 0 .4rem;">workbank &mdash; one board of what actually needs you</h3>
     <p style="max-width:62ch;margin:0 0 1.2rem;opacity:.8;">
@@ -76,18 +123,24 @@ const projects = (await getCollection('projects'))
 
   <section id="contact" class="section wrap" style="text-align:center;">
     <h2 class="section-title" style="margin-bottom:.6rem;">Something in your stack should run itself.</h2>
-    <p style="max-width:54ch;margin:0 auto 1.6rem;opacity:.8;">
+    <p style="max-width:54ch;margin:0 auto 1.2rem;opacity:.8;">
       Issue triage, deploy pipelines, inbox overload, status reporting &mdash;
       if a human is doing it on a schedule, it&apos;s a candidate. Tell me what
       it is, and I&apos;ll tell you how I&apos;d automate it.
     </p>
+    <p style="max-width:54ch;margin:0 auto 1.8rem;opacity:.8;">
+      And if your code can&apos;t leave your building: everything I build runs
+      <strong>self-hosted, in your environment, with your credentials</strong>
+      &mdash; local AI included. I never receive a copy.
+    </p>
     <a
-      href="https://github.com/lirova"
-      target="_blank"
-      rel="noopener"
+      href="mailto:lirova@proton.me"
       style="display:inline-block;padding:.85rem 1.8rem;border-radius:10px;background:#4fd1a5;color:#0a0a0a;font-weight:700;text-decoration:none;font-size:1.05rem;"
-    >Start the conversation &rarr;</a>
-    <p style="margin:1rem 0 0;font-size:.85rem;opacity:.55;">github.com/lirova</p>
+    >Tell me what should run itself &rarr;</a>
+    <p style="margin:1rem 0 0;font-size:.85rem;opacity:.55;">
+      lirova@proton.me &middot;
+      <a href="https://github.com/lirova" target="_blank" rel="noopener" style="color:inherit;">github.com/lirova</a>
+    </p>
   </section>
 
   <section id="work" class="section wrap">
