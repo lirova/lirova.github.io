@@ -26,31 +26,6 @@ const projects = (await getCollection('projects'))
     </p>
   </section>
 
-  <script>
-    // Live proof: the agent pipeline publishes its own run stats to a public
-    // gist on a schedule; render them. If the fetch fails, the strip stays hidden.
-    const PROOF_URL =
-      'https://gist.githubusercontent.com/lirova/f28d2d5303e3a17c6243760f018395a1/raw/daki-proof.json';
-    fetch(PROOF_URL, { cache: 'no-cache' })
-      .then((r) => r.json())
-      .then((d) => {
-        const mins = Math.max(
-          0,
-          Math.round((Date.now() - new Date(d.last_pipeline_run_at).getTime()) / 60000)
-        );
-        const ago =
-          mins < 90 ? `${mins} min ago` : `${Math.round(mins / 60)} h ago`;
-        const el = document.getElementById('live-proof-text');
-        if (!el || !d.agent_prs_merged) return;
-        el.textContent =
-          `LIVE — the agent pipeline below is running right now: ` +
-          `${d.agent_prs_merged} issues turned into merged PRs unattended · ` +
-          `last run ${ago} · self-published stats`;
-        document.getElementById('live-proof').hidden = false;
-      })
-      .catch(() => {});
-  </script>
-
   <section id="demo" class="section wrap">
     <h2 class="section-title">See them work</h2>
     <p style="max-width:62ch;margin:0 0 2.2rem;opacity:.8;">
@@ -324,6 +299,32 @@ const projects = (await getCollection('projects'))
   </style>
 
   <script>
+    // Live proof strip (hero): the pipeline self-publishes run stats to a public
+    // gist; render them, or stay hidden on failure. Kept in this same script so
+    // the whole page ships one external bundle (no inline script → strict CSP).
+    (() => {
+      const PROOF_URL =
+        'https://gist.githubusercontent.com/lirova/f28d2d5303e3a17c6243760f018395a1/raw/daki-proof.json';
+      fetch(PROOF_URL, { cache: 'no-cache' })
+        .then((r) => r.json())
+        .then((d) => {
+          const mins = Math.max(
+            0,
+            Math.round((Date.now() - new Date(d.last_pipeline_run_at).getTime()) / 60000)
+          );
+          const ago = mins < 90 ? `${mins} min ago` : `${Math.round(mins / 60)} h ago`;
+          const el = document.getElementById('live-proof-text');
+          if (!el || !d.agent_prs_merged) return;
+          el.textContent =
+            `LIVE — the agent pipeline below is running right now: ` +
+            `${d.agent_prs_merged} issues turned into merged PRs unattended · ` +
+            `last run ${ago} · self-published stats`;
+          const wrap = document.getElementById('live-proof');
+          if (wrap) wrap.hidden = false;
+        })
+        .catch(() => {});
+    })();
+
     // daki interactive playground — submit hands off to GitHub (the login is the
     // spam gate); the live view only ever READS GitHub's public API + the public
     // scene.json. No token, no backend. Every string from the network is rendered
@@ -462,11 +463,6 @@ const projects = (await getCollection('projects'))
       }
 
       // ---- inline scene renderer (ported from the playground; textContent only) ----
-      const ACCENTS: Record<string, string> = {
-        coral: '#e76f51', amber: '#f4a261', gold: '#e9c46a', lime: '#9acd32',
-        teal: '#2a9d8f', sky: '#5fa8d3', indigo: '#5e60ce', violet: '#9d4edd',
-        rose: '#e07a9b', slate: '#94a3b8',
-      };
       const WEATHER: Record<string, any> = {
         rain: { glyph: '💧', count: 26, fall: true, dur: [0.9, 1.8] },
         snow: { glyph: '❄', count: 22, fall: true, dur: [4, 8] },
