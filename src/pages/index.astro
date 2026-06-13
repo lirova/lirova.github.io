@@ -253,6 +253,9 @@ const projects = (await getCollection('projects'))
     .dk-pill.fail::before { content: "✕"; }
     .dk-pill.skip { opacity: 0.45; }
     .dk-pill.skip::before { content: "–"; }
+    /* In-progress shimmer — an honest "working" state, NOT a completed (●) mark. */
+    .dk-pill.working { color: var(--accent); border-color: var(--accent); animation: dk-pulse 1.1s ease-in-out infinite; }
+    .dk-pill.working::before { content: "◌"; }
 
     .dk-stage {
       position: relative;
@@ -326,13 +329,17 @@ const projects = (await getCollection('projects'))
     })();
 
     // daki interactive playground — submit hands off to GitHub (the login is the
-    // spam gate); the live view only ever READS GitHub's public API + the public
-    // scene.json. No token, no backend. Every string from the network is rendered
-    // with textContent ONLY, so untrusted issue/run text can never become markup.
+    // spam gate). The live view reads a self-published status feed + scene.json
+    // STRAIGHT FROM PAGES — no GitHub API, so no unauthenticated 60 req/hr/IP
+    // rate limit (which is what broke the old API-polled version). Every string
+    // from the network is rendered with textContent ONLY, so untrusted issue/run
+    // text can never become markup.
     (() => {
       const REPO = 'lirova/daki-playground';
-      const API = `https://api.github.com/repos/${REPO}`;
-      const SCENE = 'https://lirova.github.io/daki-playground/scene.json';
+      const BASE = 'https://lirova.github.io/daki-playground';
+      const STATUS = `${BASE}/status.json`;
+      const SCENE = `${BASE}/scene.json`;
+      const CACHE = 'dk-status-v1';
       const ISSUE_NEW = (text: string) =>
         `https://github.com/${REPO}/issues/new?template=playground-request.yml&request=${encodeURIComponent(text)}`;
 
@@ -344,23 +351,8 @@ const projects = (await getCollection('projects'))
       const stagesEl = $('dk-stages');
       if (!input || !send || !stagesEl) return;
 
-      // ---- submit: chips fill the box, Send opens the prefilled GitHub issue ----
-      document.querySelectorAll<HTMLButtonElement>('.dk-chip').forEach((c) =>
-        c.addEventListener('click', () => { input.value = c.textContent || ''; input.focus(); })
-      );
-      let watchUntil = 0;
-      send.addEventListener('click', () => {
-        const text = input.value.trim();
-        if (!text) { input.focus(); return; }
-        window.open(ISSUE_NEW(text), '_blank', 'noopener');
-        // optimistically watch for the new run when they come back
-        watchUntil = Date.now() + 180000;
-        if (statusEl) statusEl.textContent = 'Watching for your run — confirm it on GitHub, then come back…';
-        clearTimeout(timer); tick();
-      });
-
-      // ---- live pipeline view ----
       const STAGES = ['GUARD', 'SANITIZE', 'INTERPRET', 'VALIDATE', 'REVIEW', 'PR', 'MERGE'];
+      const KEYS = ['guard', 'sanitize', 'interpret', 'validate', 'review', 'pr', 'merge'];
       const pills: HTMLSpanElement[] = STAGES.map((label) => {
         const p = document.createElement('span');
         p.className = 'dk-pill';
@@ -368,98 +360,118 @@ const projects = (await getCollection('projects'))
         stagesEl.appendChild(p);
         return p;
       });
-      const setPill = (i: number, cls: string) => { pills[i].className = 'dk-pill' + (cls ? ' ' + cls : ''); };
+      const setPill = (i: number, cls: string) => {
+        pills[i].className = 'dk-pill' + (cls ? ' ' + cls : '');
+        if (cls !== 'working') pills[i].style.animationDelay = '';
+      };
+      const setDot = (cls: string) => { if (dot) dot.className = 'dk-dot' + (cls ? ' ' + cls : ''); };
+      const ago = (iso: string) => {
+        const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+        return m < 1 ? 'just now' : m < 90 ? m + ' min ago' : Math.round(m / 60) + ' h ago';
+      };
 
-      async function getJSON(url: string) {
-        const r = await fetch(url + (url.includes('?') ? '&' : '?') + '_=' + Date.now(), {
-          headers: { Accept: 'application/vnd.github+json' },
-          cache: 'no-store',
+      let lastIssue = 0;
+      let everPainted = false;
+
+      // Paint the 7 pills + status line from a status.json object. Returns the
+      // run, or null. Does NOT touch the scene (that's loadScene's job).
+      function paintStatus(st: any): any {
+        const run = st && st.last_run;
+        if (!run) return null;
+        const stages = run.stages || {};
+        KEYS.forEach((k, i) => {
+          const v = stages[k];
+          setPill(i, v === 'done' ? 'done' : v === 'fail' ? 'fail' : v === 'skip' ? 'skip' : '');
         });
-        if (r.status === 403 && r.headers.get('X-RateLimit-Remaining') === '0') {
-          throw { rateLimited: true };
+        setDot('idle');
+        const verb = run.outcome === 'shipped' ? 'shipped' : run.outcome === 'rejected' ? 'reviewed' : 'ran';
+        const sm = String(run.summary || '').replace(/[^A-Za-z0-9 .,!?'&()+:;#%-]/g, '').slice(0, 80);
+        if (statusEl) {
+          statusEl.textContent =
+            `Last request ${verb}${sm ? ` — “${sm}”` : ''} · ${ago(run.finished_at || st.updated_at)}.` +
+            ` Send one above to run it again, live.`;
         }
+        everPainted = true;
+        return run;
+      }
+
+      function applyStatus(st: any) {
+        const run = paintStatus(st);
+        if (!run) return null;
+        try { localStorage.setItem(CACHE, JSON.stringify(st)); } catch {}
+        if (run.issue !== lastIssue) { lastIssue = run.issue; loadScene(); }
+        return run;
+      }
+
+      // Instant first paint from the last-known cache (no blank flash, survives
+      // an offline/Pages hiccup).
+      try {
+        const c = localStorage.getItem(CACHE);
+        if (c) { const st = JSON.parse(c); lastIssue = (st && st.last_run && st.last_run.issue) || 0; paintStatus(st); }
+      } catch {}
+
+      let timer: ReturnType<typeof setTimeout>;
+      const schedule = (ms: number) => { clearTimeout(timer); if (document.hidden) return; timer = setTimeout(tick, ms); };
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) { clearTimeout(timer); tick(); } });
+
+      // ---- submit: chips fill the box, Send opens the prefilled GitHub issue ----
+      document.querySelectorAll<HTMLButtonElement>('.dk-chip').forEach((c) =>
+        c.addEventListener('click', () => { input.value = c.textContent || ''; input.focus(); })
+      );
+      let watching = false;
+      let watchUntil = 0;
+      let baselineIssue = 0;
+      send.addEventListener('click', () => {
+        const text = input.value.trim();
+        if (!text) { input.focus(); return; }
+        window.open(ISSUE_NEW(text), '_blank', 'noopener');
+        baselineIssue = lastIssue;
+        watching = true;
+        watchUntil = Date.now() + 210000; // watch ~3.5 min for their run to land
+        setDot('live');
+        // Honest in-progress shimmer (NOT faked per-stage checkmarks): a working
+        // pulse staggered across the row until the real result lands.
+        pills.forEach((p, i) => { setPill(i, 'working'); p.style.animationDelay = (i * 0.12) + 's'; });
+        if (statusEl) statusEl.textContent =
+          'Your request is running through the pipeline — confirm it on GitHub, then watch here…';
+        clearTimeout(timer); tick();
+      });
+
+      async function fetchStatus() {
+        const r = await fetch(STATUS + '?_=' + Date.now(), { cache: 'no-store' });
         if (!r.ok) throw new Error(String(r.status));
         return r.json();
       }
 
-      // map a workflow step's state -> pill class
-      const stepClass = (s: any) =>
-        s.status !== 'completed' ? 'active'
-          : s.conclusion === 'success' ? 'done'
-          : s.conclusion === 'skipped' ? 'skip'
-          : s.conclusion === 'failure' ? 'fail'
-          : 'skip';
-
-      function renderStages(steps: any[]) {
-        // stages 1..6 come from the job's real steps (named "Stage N …")
-        let prClass = 'skip';
-        for (let n = 1; n <= 6; n++) {
-          const step = steps.find((s) => new RegExp('Stage ' + n + '\\b').test(s.name || ''));
-          const cls = step ? stepClass(step) : 'skip';
-          setPill(n - 1, cls);
-          if (n === 6) prClass = cls;
-        }
-        // MERGE (pill 7) mirrors the PR step: a declined request skips it (the
-        // run still "succeeds"), so we never source this from run.conclusion.
-        setPill(6, prClass === 'done' ? 'done' : prClass === 'fail' ? 'fail' : prClass === 'skip' ? 'skip' : '');
-      }
-
-      let lastDone = '';
-      let lastVerdict = '';
-      function setDot(cls: string) { if (dot) dot.className = 'dk-dot' + (cls ? ' ' + cls : ''); }
-      let timer: ReturnType<typeof setTimeout>;
-      // Unauthenticated GitHub API is 60 req/hr/IP. Poll fast only while a run is
-      // active or the visitor is watching their own; idle slowly; and pause
-      // entirely when the tab is hidden so a lingering tab can't exhaust the budget.
-      const schedule = (ms: number) => { clearTimeout(timer); if (document.hidden) return; timer = setTimeout(tick, ms); };
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) { clearTimeout(timer); tick(); } });
-
       async function tick() {
         try {
-          const data = await getJSON(`${API}/actions/workflows/playground.yml/runs?per_page=1`);
-          const run = (data.workflow_runs || [])[0];
-          if (!run) {
-            setDot('idle');
-            if (statusEl) statusEl.textContent = 'No runs yet — be the first to drive it.';
-            return schedule(90000);
-          }
-          const active = run.status !== 'completed';
-          const isNew = lastDone !== String(run.id);
-          // Fetch step details only when we actually need them: an active run, the
-          // visitor's own watch window, or the FIRST time we see a finished run.
-          // Steady-state idle then stays at 1 request/cycle, under the 60/hr budget.
-          if (active || Date.now() < watchUntil || isNew) {
-            const jobs = await getJSON(`${API}/actions/runs/${run.id}/jobs`);
-            const steps = (jobs.jobs && jobs.jobs[0] && jobs.jobs[0].steps) || [];
-            renderStages(steps);
-            if (!active) {
-              const pr = steps.find((s: any) => /Stage 6\b/.test(s.name || ''));
-              lastVerdict = pr && pr.conclusion === 'success' ? 'shipped a change' : 'reviewed a request';
-            }
-          }
-
-          if (active) {
-            setDot('live');
-            if (statusEl) statusEl.textContent = 'A request is running through the pipeline right now…';
+          const st = await fetchStatus();
+          const newIssue = (st && st.last_run && st.last_run.issue) || 0;
+          if (watching && newIssue > baselineIssue) {
+            watching = false;
+            applyStatus(st);
+            const sm = String(st.last_run.summary || '').replace(/[^A-Za-z0-9 .,!?'&()+:;#%-]/g, '').slice(0, 80);
+            if (statusEl) statusEl.textContent = `✅ Shipped${sm ? ` — “${sm}”` : ''}. The page below just repainted itself.`;
+          } else if (!watching) {
+            applyStatus(st);
           } else {
-            setDot('idle');
-            const mins = Math.max(0, Math.round((Date.now() - new Date(run.updated_at).getTime()) / 60000));
-            const ago = mins < 1 ? 'just now' : mins < 90 ? mins + ' min ago' : Math.round(mins / 60) + ' h ago';
-            if (statusEl) statusEl.textContent =
-              `Idle — the pipeline ${lastVerdict || 'last ran'} ${ago}. Send a request above to watch it run live.`;
-            // repaint the inline scene once per newly-finished run
-            if (isNew) { lastDone = String(run.id); loadScene(); }
+            setDot('live'); // still waiting on their run — keep the shimmer
           }
-          schedule(active ? 5000 : Date.now() < watchUntil ? 8000 : 90000);
-        } catch (e: any) {
-          if (e && e.rateLimited) {
-            setDot('warn');
-            if (statusEl) statusEl.textContent = 'GitHub rate limit reached — watch it on the Actions tab ↗.';
-            return schedule(60000);
+        } catch {
+          // Pages/network hiccup: keep the last-known state (cache already painted).
+          // Never show an error — that was the old failure mode.
+          if (!watching && !everPainted && statusEl) {
+            statusEl.textContent = 'Live sandbox — send a request above to run the pipeline.';
           }
-          setDot('idle');
-          schedule(25000);
+          if (!watching) setDot('idle');
         }
+        if (watching && Date.now() > watchUntil) {
+          watching = false;
+          try { const c = localStorage.getItem(CACHE); if (c) paintStatus(JSON.parse(c)); } catch {}
+          if (statusEl) statusEl.textContent =
+            'The agent is reviewing your request — check your GitHub issue for its reply (it may have declined). Recent run shown below.';
+        }
+        schedule(watching ? 6000 : 30000);
       }
 
       // ---- inline scene renderer (ported from the playground; textContent only) ----
@@ -470,7 +482,7 @@ const projects = (await getCollection('projects'))
         fireflies: { glyph: '✨', count: 14, fall: false, dur: [1, 2.5] },
       };
       function loadScene() {
-        getJSON(SCENE).then((scene: any) => {
+        fetch(SCENE + '?_=' + Date.now(), { cache: 'no-store' }).then((r) => r.json()).then((scene: any) => {
           const stage = $('dk-stage'), ground = $('dk-ground'),
             objects = $('dk-objects'), weather = $('dk-weather'), marquee = $('dk-marquee');
           if (!stage || !ground || !objects || !weather || !marquee) return;
