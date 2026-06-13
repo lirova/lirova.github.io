@@ -73,20 +73,51 @@ const projects = (await getCollection('projects'))
       <source src="/daki-demo-v3.mp4" type="video/mp4" />
       <a href="/daki-demo-v3.mp4">download the clip</a>.
     </video>
-    <a
-      href="https://lirova.github.io/daki-playground/"
-      target="_blank"
-      rel="noopener"
-      style="display:block;margin:1.1rem 0 0;padding:1rem 1.3rem;border:1px solid #4fd1a5;border-radius:12px;text-decoration:none;color:inherit;background:rgba(79,209,165,.07);"
-    >
-      <strong style="color:#4fd1a5;">🎨 Don&apos;t take the video&apos;s word for it &mdash; drive the pipeline yourself &rarr;</strong>
-      <span style="display:block;margin-top:.35rem;opacity:.8;font-size:.95rem;">
-        The <strong>daki playground</strong> is this exact loop, live and open to
-        anyone: describe a change to a web page in plain English, and watch an
-        agent turn it into a reviewed, auto-merged PR that repaints the page
-        &mdash; in about a minute.
-      </span>
-    </a>
+    <!-- Interactive playground: type a change, hand off to GitHub for the
+         1-click submit (the free account is the spam gate), then watch the
+         REAL workflow run animate live off GitHub's public, read-only API.
+         No secrets, no backend — the static page only ever READS public data. -->
+    <div class="dk" id="dk">
+      <div class="dk-head">
+        <strong>🎨 Don&apos;t take the video&apos;s word for it &mdash; drive the pipeline yourself</strong>
+        <span>Describe one small change below. An agent turns it into a reviewed, auto-merged PR
+          that repaints the page &mdash; in about a minute. Watch it happen live, right here.</span>
+      </div>
+
+      <div class="dk-box">
+        <textarea id="dk-input" maxlength="280" rows="2"
+          placeholder="e.g. make it rain at night and change the message to Hello from Tokyo"></textarea>
+        <div class="dk-chips">
+          <span class="dk-chips-label">Try:</span>
+          <button type="button" class="dk-chip">make it snow at night</button>
+          <button type="button" class="dk-chip">add a cat on the roof</button>
+          <button type="button" class="dk-chip">sunset sky, message = Hello from Tokyo</button>
+          <button type="button" class="dk-chip">turn the ground to water and add three ducks</button>
+        </div>
+        <div class="dk-send-row">
+          <button type="button" id="dk-send" class="dk-send">Send it &rarr;</button>
+          <span class="dk-note">Opens a one-click confirm on GitHub (a free account is the spam gate).
+            The agent reviews and merges it &mdash; no human edits.</span>
+        </div>
+      </div>
+
+      <div class="dk-live">
+        <div class="dk-live-head">
+          <span class="dk-dot" id="dk-dot"></span>
+          <span id="dk-status">Loading live pipeline status&hellip;</span>
+        </div>
+        <div class="dk-stages" id="dk-stages" aria-label="pipeline stages"></div>
+        <div id="dk-stage" class="dk-stage">
+          <div id="dk-weather"></div><div id="dk-ground"></div><div id="dk-objects"></div>
+        </div>
+        <div id="dk-marquee" class="dk-marquee"></div>
+        <p class="dk-proof">
+          Live public sandbox &mdash;
+          <a href="https://github.com/lirova/daki-playground/pulls?q=is%3Apr+is%3Amerged"
+             target="_blank" rel="noopener">every repaint is a real merged PR &#8599;</a>
+        </p>
+      </div>
+    </div>
 
     <h3 style="margin:2.8rem 0 .4rem;">workbank &mdash; one board of what actually needs you</h3>
     <p style="max-width:62ch;margin:0 0 1.2rem;opacity:.8;">
@@ -157,5 +188,330 @@ const projects = (await getCollection('projects'))
       ))}
     </div>
   </section>
+
+  <style is:global>
+    /* ---- daki interactive playground (dk-) ---- */
+    .dk {
+      margin: 1.2rem 0 0;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--bg-card);
+      overflow: hidden;
+    }
+    .dk-head { padding: 1.1rem 1.3rem 0.4rem; }
+    .dk-head strong { color: var(--accent); font-size: 1.02rem; }
+    .dk-head span { display: block; margin-top: 0.35rem; opacity: 0.8; font-size: 0.92rem; }
+    .dk-box { padding: 0.9rem 1.3rem 1.1rem; }
+    #dk-input {
+      width: 100%;
+      resize: vertical;
+      min-height: 3.1rem;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.7rem 0.85rem;
+      font-family: var(--sans);
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+    #dk-input:focus { outline: none; border-color: var(--accent-dim); }
+    .dk-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin: 0.7rem 0; }
+    .dk-chips-label { font-family: var(--mono); font-size: 0.78rem; color: var(--text-faint); }
+    .dk-chip {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.28rem 0.7rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .dk-chip:hover { border-color: var(--accent-dim); color: var(--text); }
+    .dk-send-row { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+    .dk-send {
+      flex: none;
+      background: var(--accent);
+      color: #06241f;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 10px;
+      padding: 0.6rem 1.25rem;
+      cursor: pointer;
+    }
+    .dk-send:hover { filter: brightness(1.08); }
+    .dk-send:disabled { opacity: 0.5; cursor: default; filter: none; }
+    .dk-note { font-size: 0.78rem; color: var(--text-faint); max-width: 46ch; }
+
+    .dk-live { border-top: 1px solid var(--border); padding: 1rem 1.3rem 1.2rem; background: var(--bg-elev); }
+    .dk-live-head { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.82rem; color: var(--text-dim); }
+    .dk-dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--text-faint); flex: none; }
+    .dk-dot.live { background: #4fd1a5; box-shadow: 0 0 7px #4fd1a5; animation: dk-pulse 1.2s ease-in-out infinite; }
+    .dk-dot.idle { background: #6b7280; }
+    .dk-dot.warn { background: #f4a261; }
+    @keyframes dk-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    .dk-stages { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0 1rem; }
+    .dk-pill {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.03em;
+      padding: 0.3rem 0.6rem;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      color: var(--text-faint);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+    .dk-pill::before { content: "○"; font-size: 0.7rem; }
+    .dk-pill.active { color: #06241f; background: var(--accent); border-color: var(--accent); }
+    .dk-pill.active::before { content: "◐"; }
+    .dk-pill.done { color: #4fd1a5; border-color: rgba(79,209,165,0.5); }
+    .dk-pill.done::before { content: "●"; }
+    .dk-pill.fail { color: #f87171; border-color: rgba(248,113,113,0.5); }
+    .dk-pill.fail::before { content: "✕"; }
+    .dk-pill.skip { opacity: 0.45; }
+    .dk-pill.skip::before { content: "–"; }
+
+    .dk-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      container-type: inline-size;
+    }
+    .dk-stage.sky-day    { background: linear-gradient(#74c0e8, #cfeefe 75%); }
+    .dk-stage.sky-sunset { background: linear-gradient(#3c2a55, #c4504e 60%, #f2a35e 85%); }
+    .dk-stage.sky-night  { background: linear-gradient(#070b1d, #1b2350 80%); }
+    .dk-stage.sky-dawn   { background: linear-gradient(#4a5a8a, #d99aa6 70%, #f5d9a8 90%); }
+    #dk-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 22%; }
+    .ground-grass    { background: linear-gradient(#4f9d4f, #2f6d33); }
+    .ground-sand     { background: linear-gradient(#e8cf94, #c9a866); }
+    .ground-snow     { background: linear-gradient(#eef3f8, #c9d6e4); }
+    .ground-water    { background: linear-gradient(#3a7fb5, #1d4f7e); }
+    .ground-pavement { background: linear-gradient(#8a8a92, #5c5c64); }
+    .dk-obj { position: absolute; transform: translate(-50%, -50%); user-select: none; line-height: 1; text-shadow: 0 2px 6px rgba(0,0,0,.25); }
+    .dk-obj.s1 { font-size: clamp(12px, 4cqw, 20px); }
+    .dk-obj.s2 { font-size: clamp(18px, 7cqw, 34px); }
+    .dk-obj.s3 { font-size: clamp(26px, 11cqw, 52px); }
+    .dk-particle { position: absolute; top: -8%; user-select: none; animation: dk-fall linear infinite; }
+    @keyframes dk-fall { to { transform: translateY(120%) translateY(40vh); } }
+    .dk-twinkle { position: absolute; user-select: none; animation: dk-twinkle ease-in-out infinite alternate; }
+    @keyframes dk-twinkle { from { opacity: 0.15; } to { opacity: 1; } }
+
+    .dk-marquee {
+      margin-top: 0.6rem;
+      padding: 0.65rem 0.9rem;
+      border-radius: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: var(--accent);
+      text-align: center;
+      min-height: 1.2rem;
+    }
+    .dk-proof { margin: 0.7rem 0 0; font-family: var(--mono); font-size: 0.76rem; color: var(--text-faint); }
+    .dk-proof a { color: var(--text-dim); }
+    .dk-proof a:hover { color: var(--accent); text-decoration: none; }
+  </style>
+
+  <script>
+    // daki interactive playground — submit hands off to GitHub (the login is the
+    // spam gate); the live view only ever READS GitHub's public API + the public
+    // scene.json. No token, no backend. Every string from the network is rendered
+    // with textContent ONLY, so untrusted issue/run text can never become markup.
+    (() => {
+      const REPO = 'lirova/daki-playground';
+      const API = `https://api.github.com/repos/${REPO}`;
+      const SCENE = 'https://lirova.github.io/daki-playground/scene.json';
+      const ISSUE_NEW = (text: string) =>
+        `https://github.com/${REPO}/issues/new?template=playground-request.yml&request=${encodeURIComponent(text)}`;
+
+      const $ = (id: string) => document.getElementById(id);
+      const input = $('dk-input') as HTMLTextAreaElement | null;
+      const send = $('dk-send') as HTMLButtonElement | null;
+      const statusEl = $('dk-status');
+      const dot = $('dk-dot');
+      const stagesEl = $('dk-stages');
+      if (!input || !send || !stagesEl) return;
+
+      // ---- submit: chips fill the box, Send opens the prefilled GitHub issue ----
+      document.querySelectorAll<HTMLButtonElement>('.dk-chip').forEach((c) =>
+        c.addEventListener('click', () => { input.value = c.textContent || ''; input.focus(); })
+      );
+      let watchUntil = 0;
+      send.addEventListener('click', () => {
+        const text = input.value.trim();
+        if (!text) { input.focus(); return; }
+        window.open(ISSUE_NEW(text), '_blank', 'noopener');
+        // optimistically watch for the new run when they come back
+        watchUntil = Date.now() + 180000;
+        if (statusEl) statusEl.textContent = 'Watching for your run — confirm it on GitHub, then come back…';
+        clearTimeout(timer); tick();
+      });
+
+      // ---- live pipeline view ----
+      const STAGES = ['GUARD', 'SANITIZE', 'INTERPRET', 'VALIDATE', 'REVIEW', 'PR', 'MERGE'];
+      const pills: HTMLSpanElement[] = STAGES.map((label) => {
+        const p = document.createElement('span');
+        p.className = 'dk-pill';
+        p.textContent = label; // textContent only — fixed labels, never network text
+        stagesEl.appendChild(p);
+        return p;
+      });
+      const setPill = (i: number, cls: string) => { pills[i].className = 'dk-pill' + (cls ? ' ' + cls : ''); };
+
+      async function getJSON(url: string) {
+        const r = await fetch(url + (url.includes('?') ? '&' : '?') + '_=' + Date.now(), {
+          headers: { Accept: 'application/vnd.github+json' },
+          cache: 'no-store',
+        });
+        if (r.status === 403 && r.headers.get('X-RateLimit-Remaining') === '0') {
+          throw { rateLimited: true };
+        }
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      }
+
+      // map a workflow step's state -> pill class
+      const stepClass = (s: any) =>
+        s.status !== 'completed' ? 'active'
+          : s.conclusion === 'success' ? 'done'
+          : s.conclusion === 'skipped' ? 'skip'
+          : s.conclusion === 'failure' ? 'fail'
+          : 'skip';
+
+      function renderStages(steps: any[]) {
+        // stages 1..6 come from the job's real steps (named "Stage N …")
+        let prClass = 'skip';
+        for (let n = 1; n <= 6; n++) {
+          const step = steps.find((s) => new RegExp('Stage ' + n + '\\b').test(s.name || ''));
+          const cls = step ? stepClass(step) : 'skip';
+          setPill(n - 1, cls);
+          if (n === 6) prClass = cls;
+        }
+        // MERGE (pill 7) mirrors the PR step: a declined request skips it (the
+        // run still "succeeds"), so we never source this from run.conclusion.
+        setPill(6, prClass === 'done' ? 'done' : prClass === 'fail' ? 'fail' : prClass === 'skip' ? 'skip' : '');
+      }
+
+      let lastDone = '';
+      let lastVerdict = '';
+      function setDot(cls: string) { if (dot) dot.className = 'dk-dot' + (cls ? ' ' + cls : ''); }
+      let timer: ReturnType<typeof setTimeout>;
+      // Unauthenticated GitHub API is 60 req/hr/IP. Poll fast only while a run is
+      // active or the visitor is watching their own; idle slowly; and pause
+      // entirely when the tab is hidden so a lingering tab can't exhaust the budget.
+      const schedule = (ms: number) => { clearTimeout(timer); if (document.hidden) return; timer = setTimeout(tick, ms); };
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) { clearTimeout(timer); tick(); } });
+
+      async function tick() {
+        try {
+          const data = await getJSON(`${API}/actions/workflows/playground.yml/runs?per_page=1`);
+          const run = (data.workflow_runs || [])[0];
+          if (!run) {
+            setDot('idle');
+            if (statusEl) statusEl.textContent = 'No runs yet — be the first to drive it.';
+            return schedule(90000);
+          }
+          const active = run.status !== 'completed';
+          const isNew = lastDone !== String(run.id);
+          // Fetch step details only when we actually need them: an active run, the
+          // visitor's own watch window, or the FIRST time we see a finished run.
+          // Steady-state idle then stays at 1 request/cycle, under the 60/hr budget.
+          if (active || Date.now() < watchUntil || isNew) {
+            const jobs = await getJSON(`${API}/actions/runs/${run.id}/jobs`);
+            const steps = (jobs.jobs && jobs.jobs[0] && jobs.jobs[0].steps) || [];
+            renderStages(steps);
+            if (!active) {
+              const pr = steps.find((s: any) => /Stage 6\b/.test(s.name || ''));
+              lastVerdict = pr && pr.conclusion === 'success' ? 'shipped a change' : 'reviewed a request';
+            }
+          }
+
+          if (active) {
+            setDot('live');
+            if (statusEl) statusEl.textContent = 'A request is running through the pipeline right now…';
+          } else {
+            setDot('idle');
+            const mins = Math.max(0, Math.round((Date.now() - new Date(run.updated_at).getTime()) / 60000));
+            const ago = mins < 1 ? 'just now' : mins < 90 ? mins + ' min ago' : Math.round(mins / 60) + ' h ago';
+            if (statusEl) statusEl.textContent =
+              `Idle — the pipeline ${lastVerdict || 'last ran'} ${ago}. Send a request above to watch it run live.`;
+            // repaint the inline scene once per newly-finished run
+            if (isNew) { lastDone = String(run.id); loadScene(); }
+          }
+          schedule(active ? 5000 : Date.now() < watchUntil ? 8000 : 90000);
+        } catch (e: any) {
+          if (e && e.rateLimited) {
+            setDot('warn');
+            if (statusEl) statusEl.textContent = 'GitHub rate limit reached — watch it on the Actions tab ↗.';
+            return schedule(60000);
+          }
+          setDot('idle');
+          schedule(25000);
+        }
+      }
+
+      // ---- inline scene renderer (ported from the playground; textContent only) ----
+      const ACCENTS: Record<string, string> = {
+        coral: '#e76f51', amber: '#f4a261', gold: '#e9c46a', lime: '#9acd32',
+        teal: '#2a9d8f', sky: '#5fa8d3', indigo: '#5e60ce', violet: '#9d4edd',
+        rose: '#e07a9b', slate: '#94a3b8',
+      };
+      const WEATHER: Record<string, any> = {
+        rain: { glyph: '💧', count: 26, fall: true, dur: [0.9, 1.8] },
+        snow: { glyph: '❄', count: 22, fall: true, dur: [4, 8] },
+        stars: { glyph: '✦', count: 24, fall: false, dur: [1.5, 3.5] },
+        fireflies: { glyph: '✨', count: 14, fall: false, dur: [1, 2.5] },
+      };
+      function loadScene() {
+        getJSON(SCENE).then((scene: any) => {
+          const stage = $('dk-stage'), ground = $('dk-ground'),
+            objects = $('dk-objects'), weather = $('dk-weather'), marquee = $('dk-marquee');
+          if (!stage || !ground || !objects || !weather || !marquee) return;
+          stage.className = 'dk-stage sky-' + scene.sky;
+          ground.className = 'ground-' + scene.ground;
+          marquee.textContent = String(scene.marquee || '').slice(0, 240);
+          objects.replaceChildren();
+          for (const o of (scene.objects || []).slice(0, 12)) {
+            const span = document.createElement('span');
+            span.className = 'dk-obj s' + o.size;
+            span.textContent = String(o.emoji).slice(0, 16);
+            span.style.left = Math.min(100, Math.max(0, Number(o.x))) + '%';
+            span.style.top = Math.min(100, Math.max(0, Number(o.y))) + '%';
+            objects.appendChild(span);
+          }
+          weather.replaceChildren();
+          const spec = WEATHER[scene.weather];
+          if (spec) {
+            for (let i = 0; i < spec.count; i++) {
+              const p = document.createElement('span');
+              p.className = spec.fall ? 'dk-particle' : 'dk-twinkle';
+              p.textContent = spec.glyph;
+              p.style.left = Math.random() * 100 + '%';
+              if (!spec.fall) p.style.top = Math.random() * 70 + '%';
+              p.style.fontSize = 8 + Math.random() * 10 + 'px';
+              const dur = spec.dur[0] + Math.random() * (spec.dur[1] - spec.dur[0]);
+              p.style.animationDuration = dur + 's';
+              p.style.animationDelay = -Math.random() * dur + 's';
+              weather.appendChild(p);
+            }
+          }
+        }).catch(() => {});
+      }
+
+      loadScene();
+      tick();
+    })();
+  </script>
 
 </Base>
