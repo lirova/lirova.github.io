@@ -340,6 +340,10 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
           const ago = mins < 90 ? `${mins} min ago` : `${Math.round(mins / 60)} h ago`;
           const el = document.getElementById('live-proof-text');
           if (!el || !d.agent_prs_merged) return;
+          // Staleness guard: if the feed is >24h old, keep the strip HIDDEN rather
+          // than claim "running right now" next to an old timestamp. A dead feed
+          // degrades to invisible, never to a visible contradiction.
+          if (!Number.isFinite(mins) || mins > 1440) return;
           el.textContent =
             `LIVE — the agent pipeline below is running right now: ` +
             `${d.agent_prs_merged} issues turned into merged PRs unattended · ` +
