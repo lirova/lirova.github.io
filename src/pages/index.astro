@@ -6,6 +6,13 @@ import ProjectCard from '../components/ProjectCard.astro';
 const projects = (await getCollection('projects'))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
+
+// Two self-hosted relays — the browser tries the m4 primary first, silently
+// falls back to our Cloudflare Worker. Neither exposes any email (scrape-proof).
+// Both origins are allow-listed in Base.astro's CSP connect-src.
+// Set RELAY_FALLBACK after `wrangler deploy` (see ~/dev/tools/lead-relay/README.md).
+const RELAY_PRIMARY = 'https://m4.tail7d04cf.ts.net:10000/lead';
+const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
 ---
 
 <Base title="Engineering Portfolio">
@@ -139,12 +146,27 @@ const projects = (await getCollection('projects'))
       <strong>self-hosted, in your environment, with your credentials</strong>
       &mdash; local AI included. I never receive a copy.
     </p>
-    <a
-      href="mailto:lirova@proton.me"
-      style="display:inline-block;padding:.85rem 1.8rem;border-radius:10px;background:#4fd1a5;color:#0a0a0a;font-weight:700;text-decoration:none;font-size:1.05rem;"
-    >Tell me what should run itself &rarr;</a>
-    <p style="margin:1rem 0 0;font-size:.85rem;opacity:.55;">
-      lirova@proton.me &middot;
+    <form id="contact-form" class="contact-form"
+      data-primary={RELAY_PRIMARY} data-fallback={RELAY_FALLBACK}>
+      <!-- honeypot: humans never see/fill this; bots do, and get dropped -->
+      <input type="checkbox" name="botcheck" class="cf-hp" tabindex="-1" autocomplete="off" />
+      <div class="cf-row">
+        <label class="cf-field"><span>Name</span>
+          <input type="text" name="name" required autocomplete="name" /></label>
+        <label class="cf-field"><span>Company <em>(optional)</em></span>
+          <input type="text" name="company" autocomplete="organization" /></label>
+      </div>
+      <label class="cf-field"><span>Your email <em>(so I can reply)</em></span>
+        <input type="email" name="email" required autocomplete="email" /></label>
+      <label class="cf-field"><span>What should run itself?</span>
+        <textarea name="message" rows="4" required
+          placeholder="The workflow, the stack, what success looks like."></textarea></label>
+      <button type="submit" class="cf-send">Tell me what should run itself &rarr;</button>
+      <p class="cf-trust">Goes straight to me &mdash; no account, no newsletter, I reply personally.</p>
+      <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
+    </form>
+    <p style="margin:1.2rem 0 0;font-size:.85rem;opacity:.55;">
+      Prefer GitHub?
       <a href="https://github.com/lirova" target="_blank" rel="noopener" style="color:inherit;">github.com/lirova</a>
     </p>
   </section>
@@ -519,6 +541,67 @@ const projects = (await getCollection('projects'))
 
       loadScene();
       tick();
+    })();
+
+    // "Start a pilot" form — POST to the m4 primary relay, silently fall back to
+    // the Cloudflare Worker. Success ONLY on a real 200 → never a false "sent";
+    // both unreachable → an honest "try again", never silent. No email in the DOM.
+    (() => {
+      const form = document.getElementById('contact-form') as HTMLFormElement | null;
+      const statusEl = document.getElementById('cf-status');
+      const btn = form?.querySelector('.cf-send') as HTMLButtonElement | null;
+      if (!form || !statusEl || !btn) return;
+
+      async function tryRelay(url: string, payload: object, ms: number): Promise<boolean> {
+        if (!url || url.includes('REPLACE_WITH')) return false; // fallback not deployed yet
+        const ctl = new AbortController();
+        const t = setTimeout(() => ctl.abort(), ms);
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: ctl.signal,
+          });
+          if (!res.ok) return false;
+          const data = await res.json().catch(() => ({}));
+          return data.success === true;
+        } catch {
+          return false; // timeout / network / CORS — relay down, try the next
+        } finally {
+          clearTimeout(t);
+        }
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const original = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+        statusEl.textContent = '';
+        statusEl.className = 'cf-status';
+
+        const fd = new FormData(form);
+        const payload = {
+          name: fd.get('name'), email: fd.get('email'),
+          company: fd.get('company'), message: fd.get('message'),
+          botcheck: fd.get('botcheck') ? '1' : '',
+        };
+        const ok = (await tryRelay(form.dataset.primary || '', payload, 6000)) ||
+                   (await tryRelay(form.dataset.fallback || '', payload, 8000));
+
+        if (ok) {
+          form.reset();
+          statusEl.textContent = "Sent. I'll get back to you personally — thanks.";
+          statusEl.classList.add('ok');
+          btn.textContent = 'Sent ✓';
+          return; // leave as confirmation; never a false success
+        }
+        statusEl.textContent = "Couldn't send that just now — please try again in a moment.";
+        statusEl.classList.add('err');
+        btn.disabled = false;
+        btn.textContent = original;
+      });
     })();
   </script>
 

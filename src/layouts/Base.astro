@@ -16,11 +16,13 @@ const year = new Date().getFullYear();
     <meta charset="utf-8" />
     <!-- Defense-in-depth CSP (GitHub Pages can't set headers, so meta is the only
          lever). All scripts ship as one external bundle → strict script-src 'self'.
-         connect-src is the key directive: scene/run content can only ever reach
-         these three read-only public endpoints, never become an arbitrary request. -->
+         connect-src is the key directive — the only endpoints any script may reach:
+         the read-only gist + Pages feeds (playground/live-proof), and the two
+         self-hosted contact relays the "Start a pilot" form POSTs to (m4 Funnel +
+         the Cloudflare Worker fallback). Nothing else. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; connect-src 'self' https://gist.githubusercontent.com https://lirova.github.io; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; connect-src 'self' https://gist.githubusercontent.com https://lirova.github.io https://m4.tail7d04cf.ts.net:10000 https://*.workers.dev; base-uri 'none'; form-action 'none'"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
@@ -35,6 +37,7 @@ const year = new Date().getFullYear();
         <nav class="nav">
           <a href="/#demo">Demo</a>
           <a href="/#work">Work</a>
+          <a href="/#contact">Contact</a>
         </nav>
       </div>
     </header>

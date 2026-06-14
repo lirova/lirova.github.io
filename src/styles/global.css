@@ -231,6 +231,63 @@ code, .mono { font-family: var(--mono); }
 }
 .prose ul { color: var(--text-dim); }
 
+/* ---- contact / "start a pilot" form ---- */
+.contact-form {
+  max-width: 460px;
+  margin: 0 auto;
+  text-align: left;
+  display: grid;
+  gap: 14px;
+}
+.contact-form .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.contact-form .cf-field { display: grid; gap: 6px; }
+.contact-form .cf-field > span {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+}
+.contact-form .cf-field > span em { font-style: normal; opacity: 0.7; }
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 11px 13px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease;
+}
+.contact-form input:focus,
+.contact-form textarea:focus { outline: none; border-color: var(--accent-dim); }
+.contact-form textarea { resize: vertical; line-height: 1.5; }
+/* honeypot — visually gone, present for bots */
+.contact-form .cf-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.cf-send {
+  justify-self: center;
+  margin-top: 4px;
+  background: var(--accent);
+  color: #06201c;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 700;
+  font-size: 1.02rem;
+  cursor: pointer;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+.cf-send:hover:not(:disabled) { filter: brightness(1.08); }
+.cf-send:disabled { opacity: 0.6; cursor: default; }
+.cf-trust { margin: 0; text-align: center; color: var(--text-faint); font-size: 0.82rem; }
+.cf-status { margin: 0; text-align: center; font-size: 0.9rem; min-height: 1.2em; }
+.cf-status.ok { color: var(--accent); }
+.cf-status.err { color: #f7768e; }
+@media (max-width: 600px) {
+  .contact-form .cf-row { grid-template-columns: 1fr; }
+}
+
 /* ---- footer ---- */
 .site-footer {
   border-top: 1px solid var(--border);
