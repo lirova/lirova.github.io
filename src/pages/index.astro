@@ -48,6 +48,38 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
     </div>
   </section>
 
+  <section id="how" class="section wrap">
+    <div class="section-head">
+      <p class="section-title">How it works</p>
+      <h2>Autonomous where it should be. Supervised where it matters.</h2>
+      <p>
+        Not &ldquo;set it and forget it.&rdquo; Automation you can actually trust to
+        run unattended &mdash; because it&apos;s bounded by your environment and by
+        its own review gates.
+      </p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h3>Runs in your environment</h3>
+        <p>Self-hosted on your machines, with your credentials and your AI keys.
+          Your code and data never leave the building &mdash; I never receive a copy.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h3>Does the work, unattended</h3>
+        <p>Label the task and walk away. The agent takes it end to end and keeps
+          going around the clock &mdash; no human keystrokes on the routine path.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h3>Reviews itself before anything ships</h3>
+        <p>Guardrails first: it won&apos;t merge on a false-green, won&apos;t dodge the
+          spec, bounds its own cost and runtime, and escalates the real calls to you.</p>
+      </div>
+    </div>
+  </section>
+
   <section id="demo" class="section wrap">
     <div class="section-head">
       <p class="section-title">See them work</p>
@@ -149,35 +181,21 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
     </div>
   </section>
 
-  <section id="how" class="section wrap">
+  <section id="work" class="section wrap">
     <div class="section-head">
-      <p class="section-title">How it works</p>
-      <h2>Autonomous where it should be. Supervised where it matters.</h2>
-      <p>
-        Not &ldquo;set it and forget it.&rdquo; Automation you can actually trust to
-        run unattended &mdash; because it&apos;s bounded by your environment and by
-        its own review gates.
-      </p>
+      <p class="section-title">Selected work</p>
+      <h2>Shipped systems, end to end.</h2>
     </div>
-    <div class="steps">
-      <div class="step">
-        <div class="n">1</div>
-        <h3>Runs in your environment</h3>
-        <p>Self-hosted on your machines, with your credentials and your AI keys.
-          Your code and data never leave the building &mdash; I never receive a copy.</p>
-      </div>
-      <div class="step">
-        <div class="n">2</div>
-        <h3>Does the work, unattended</h3>
-        <p>Label the task and walk away. The agent takes it end to end and keeps
-          going around the clock &mdash; no human keystrokes on the routine path.</p>
-      </div>
-      <div class="step">
-        <div class="n">3</div>
-        <h3>Reviews itself before anything ships</h3>
-        <p>Guardrails first: it won&apos;t merge on a false-green, won&apos;t dodge the
-          spec, bounds its own cost and runtime, and escalates the real calls to you.</p>
-      </div>
+    <div class="grid">
+      {projects.map((p) => (
+        <ProjectCard
+          slug={p.id}
+          title={p.data.title}
+          summary={p.data.summary}
+          domain={p.data.domain}
+          stack={p.data.stack}
+        />
+      ))}
     </div>
   </section>
 
@@ -217,24 +235,6 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
       Prefer GitHub?
       <a href="https://github.com/lirova" target="_blank" rel="noopener" style="color:inherit;">github.com/lirova</a>
     </p>
-  </section>
-
-  <section id="work" class="section wrap">
-    <div class="section-head">
-      <p class="section-title">Selected work</p>
-      <h2>Shipped systems, end to end.</h2>
-    </div>
-    <div class="grid">
-      {projects.map((p) => (
-        <ProjectCard
-          slug={p.id}
-          title={p.data.title}
-          summary={p.data.summary}
-          domain={p.data.domain}
-          stack={p.data.stack}
-        />
-      ))}
-    </div>
   </section>
 
   <style is:global>
