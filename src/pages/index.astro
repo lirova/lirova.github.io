@@ -19,42 +19,46 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
   <section class="hero wrap">
     <p class="eyebrow">Systems · Platforms · Automation</p>
     <h1>Systems that run in production.<br />Automation that runs itself.</h1>
+    <p class="lede">
+      Production-grade automation and AI systems &mdash; built, run, and proven
+      live. Self-hosted in your environment, so your code and data never leave
+      the building.
+    </p>
     <div class="links">
-      <a href="/#demo">↓ Watch it work</a>
-      <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="/#contact" class="btn btn-primary">Start a pilot &rarr;</a>
+      <a href="/#demo" class="btn btn-ghost">Watch it work</a>
     </div>
-    <p
-      id="live-proof"
-      hidden
-      style="margin-top:1.4rem;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;opacity:.75;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;"
-    >
-      <span style="width:.55rem;height:.55rem;border-radius:50%;background:#4fd1a5;box-shadow:0 0 6px #4fd1a5;flex:none;"></span>
+    <!-- live-proof badge: hidden by default via display:none (NOT the `hidden`
+         attr, which an inline display would override); the script flips it to
+         inline-flex only when the feed is present AND fresh (<24h). -->
+    <p id="live-proof" class="proof-pill" style="display:none;">
+      <span class="dot"></span>
       <span id="live-proof-text"></span>
     </p>
   </section>
 
   <section id="demo" class="section wrap">
-    <h2 class="section-title">See them work</h2>
-    <p style="max-width:62ch;margin:0 0 2.2rem;opacity:.8;">
-      Three systems, all real, all running in production today. Real screens,
-      no mockups &mdash; under 30 seconds each.
-    </p>
+    <div class="section-head">
+      <p class="section-title">See them work</p>
+      <h2>Three systems, running in production today.</h2>
+      <p>Real screens, no mockups &mdash; under 30 seconds each.</p>
+    </div>
 
-    <h3 style="margin:0 0 .4rem;">daki &mdash; issues in, reviewed merges out</h3>
-    <p style="max-width:62ch;margin:0 0 1.2rem;opacity:.8;">
-      Label a GitHub issue and walk away: an agent takes it, writes the fix,
-      opens a PR, reviews it against the tests, and merges. No human keystrokes.
-      This footage is a real, unedited run:
-    </p>
-    <video
-      controls
-      preload="metadata"
-      poster="/daki-demo-v3-poster.jpg"
-      style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:block;"
-    >
-      <source src="/daki-demo-v3.mp4" type="video/mp4" />
-      <a href="/daki-demo-v3.mp4">download the clip</a>.
-    </video>
+    <div class="demo-block">
+      <h3>daki &mdash; issues in, reviewed merges out</h3>
+      <p>
+        Label a GitHub issue and walk away: an agent takes it, writes the fix,
+        opens a PR, reviews it against the tests, and merges. No human keystrokes.
+        This footage is a real, unedited run:
+      </p>
+      <div class="media-frame">
+        <div class="bar"><i></i><i></i><i></i><span>daki — real run</span></div>
+        <video controls preload="metadata" poster="/daki-demo-v3-poster.jpg">
+          <source src="/daki-demo-v3.mp4" type="video/mp4" />
+          <a href="/daki-demo-v3.mp4">download the clip</a>.
+        </video>
+      </div>
+    </div>
     <!-- Interactive playground: type a change, hand off to GitHub for the
          1-click submit (the free account is the spam gate), then watch the
          REAL workflow run animate live off GitHub's public, read-only API.
@@ -101,42 +105,43 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
       </div>
     </div>
 
-    <h3 style="margin:2.8rem 0 .4rem;">workbank &mdash; one board of what actually needs you</h3>
-    <p style="max-width:62ch;margin:0 0 1.2rem;opacity:.8;">
-      Email, calendar, GitHub, GitLab, Slack &mdash; read by AI into a single
-      task board. It plans your day around your real hours, learns your pace,
-      and keeps everything in an encrypted bank on your own machine:
-    </p>
-    <video
-      controls
-      preload="metadata"
-      poster="/workbank-demo-v2-poster.jpg"
-      style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:block;"
-    >
-      <source src="/workbank-demo-v2.mp4" type="video/mp4" />
-      <a href="/workbank-demo-v2.mp4">download the clip</a>.
-    </video>
+    <div class="demo-block" style="margin-top:3rem;">
+      <h3>workbank &mdash; one board of what actually needs you</h3>
+      <p>
+        Email, calendar, GitHub, GitLab, Slack &mdash; read by AI into a single
+        task board. It plans your day around your real hours, learns your pace,
+        and keeps everything in an encrypted bank on your own machine:
+      </p>
+      <div class="media-frame">
+        <div class="bar"><i></i><i></i><i></i><span>workbank — live UI</span></div>
+        <video controls preload="metadata" poster="/workbank-demo-v2-poster.jpg">
+          <source src="/workbank-demo-v2.mp4" type="video/mp4" />
+          <a href="/workbank-demo-v2.mp4">download the clip</a>.
+        </video>
+      </div>
+    </div>
 
-    <h3 style="margin:2.8rem 0 .4rem;">voicebot &mdash; your work, narrated</h3>
-    <p style="max-width:62ch;margin:0 0 1.2rem;opacity:.8;">
-      Every agent session and inbox summary, read aloud to your phone in a
-      per-project voice &mdash; and you can talk back. Built for hands-free
-      operating: commutes, workshops, anywhere your screen isn&apos;t:
-    </p>
-    <video
-      controls
-      preload="metadata"
-      poster="/voicebot-demo-v1-poster.jpg"
-      style="width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:block;"
-    >
-      <source src="/voicebot-demo-v1.mp4" type="video/mp4" />
-      <a href="/voicebot-demo-v1.mp4">download the clip</a>.
-    </video>
+    <div class="demo-block">
+      <h3>voicebot &mdash; your work, narrated</h3>
+      <p>
+        Every agent session and inbox summary, read aloud to your phone in a
+        per-project voice &mdash; and you can talk back. Built for hands-free
+        operating: commutes, workshops, anywhere your screen isn&apos;t:
+      </p>
+      <div class="media-frame">
+        <div class="bar"><i></i><i></i><i></i><span>voicebot — debut</span></div>
+        <video controls preload="metadata" poster="/voicebot-demo-v1-poster.jpg">
+          <source src="/voicebot-demo-v1.mp4" type="video/mp4" />
+          <a href="/voicebot-demo-v1.mp4">download the clip</a>.
+        </video>
+      </div>
+    </div>
   </section>
 
   <section id="contact" class="section wrap" style="text-align:center;">
-    <h2 class="section-title" style="margin-bottom:.6rem;">Something in your stack should run itself.</h2>
-    <p style="max-width:54ch;margin:0 auto 1.2rem;opacity:.8;">
+    <p class="section-title" style="margin-bottom:.7rem;">Start a pilot</p>
+    <h2 style="font-size:clamp(1.8rem,3.6vw,2.5rem);margin:0 0 1.1rem;">Something in your stack should run itself.</h2>
+    <p style="max-width:54ch;margin:0 auto 1.2rem;color:var(--text-dim);">
       Issue triage, deploy pipelines, inbox overload, status reporting &mdash;
       if a human is doing it on a schedule, it&apos;s a candidate. Tell me what
       it is, and I&apos;ll tell you how I&apos;d automate it.
@@ -161,7 +166,7 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
       <label class="cf-field"><span>What should run itself?</span>
         <textarea name="message" rows="4" required
           placeholder="The workflow, the stack, what success looks like."></textarea></label>
-      <button type="submit" class="cf-send">Tell me what should run itself &rarr;</button>
+      <button type="submit" class="btn btn-primary cf-send">Tell me what should run itself &rarr;</button>
       <p class="cf-trust">Goes straight to me &mdash; no account, no newsletter, I reply personally.</p>
       <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
     </form>
@@ -172,7 +177,10 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
   </section>
 
   <section id="work" class="section wrap">
-    <h2 class="section-title">Selected work</h2>
+    <div class="section-head">
+      <p class="section-title">Selected work</p>
+      <h2>Shipped systems, end to end.</h2>
+    </div>
     <div class="grid">
       {projects.map((p) => (
         <ProjectCard
@@ -349,7 +357,7 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
             `${d.agent_prs_merged} issues turned into merged PRs unattended · ` +
             `last run ${ago} · self-published stats`;
           const wrap = document.getElementById('live-proof');
-          if (wrap) wrap.hidden = false;
+          if (wrap) wrap.style.display = 'inline-flex';
         })
         .catch(() => {});
     })();
