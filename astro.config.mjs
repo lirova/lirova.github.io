@@ -9,4 +9,9 @@ export default defineConfig({
   //  - GitHub project page:  https://<username>.github.io   + set `base: '/portfolio'`
   site: 'https://lirova.github.io',
   // base: '/portfolio',  // not needed — root user page (lirova.github.io)
+
+  // Never inline scripts/assets. Our CSP is strict `script-src 'self'` (no
+  // unsafe-inline), so every script MUST ship as an external bundle — otherwise
+  // Astro inlines small ones and the browser blocks them (broke the legal pages).
+  vite: { build: { assetsInlineLimit: 0 } },
 });

@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+const updated = 'June 14, 2026';
+---
+
+<Base title="Terms of Service — lirova">
+  <section class="detail wrap">
+    <a href="/" class="back">&larr; Back home</a>
+    <div class="prose">
+      <h1>Terms of Service</h1>
+      <p class="meta-line">Last updated: {updated}</p>
+
+      <p>
+        These terms govern your use of the <strong>lirova</strong> website
+        (<code>lirova.github.io</code>), any pilot engagement, and any self-hosted
+        software we provide. By using them, you agree to these terms.
+      </p>
+
+      <h2>1. What we provide</h2>
+      <p>
+        lirova designs, builds, and operates automation and AI systems, and offers
+        scoped pilot engagements. Software we provide is generally
+        <strong>self-hosted</strong> &mdash; it runs in your own environment, on
+        your own infrastructure, with your own credentials.
+      </p>
+
+      <h2>2. Pilots and engagements</h2>
+      <p>
+        The specific scope, deliverables, and any fees of a pilot or engagement are
+        agreed separately in writing. A free pilot is offered as-is to evaluate
+        fit, and either party may end it at any time.
+      </p>
+
+      <h2>3. Your responsibilities</h2>
+      <p>
+        Because the software runs in your environment, you are responsible for your
+        own infrastructure, credentials, API keys, backups, and for using the
+        software in compliance with applicable laws and the terms of any
+        third-party services it connects to (for example, your Google account).
+      </p>
+
+      <h2>4. Intellectual property</h2>
+      <p>
+        Unless agreed otherwise in writing, lirova retains ownership of the
+        underlying software and tooling, and grants you a license to use it for your
+        own operations. Your data and your content remain entirely yours.
+      </p>
+
+      <h2>5. No warranty</h2>
+      <p>
+        The website, pilots, and software are provided <strong>&ldquo;as is&rdquo;
+        and &ldquo;as available,&rdquo;</strong> without warranties of any kind,
+        express or implied, including merchantability, fitness for a particular
+        purpose, and non-infringement. Automation and AI systems can make mistakes;
+        you are responsible for reviewing outcomes before relying on them.
+      </p>
+
+      <h2>6. Limitation of liability</h2>
+      <p>
+        To the maximum extent permitted by law, lirova will not be liable for any
+        indirect, incidental, special, or consequential damages, or for any loss of
+        data, profits, or business, arising from your use of the website, a pilot,
+        or the software.
+      </p>
+
+      <h2>7. Acceptable use</h2>
+      <p>
+        Don&rsquo;t use the website or software to break the law, infringe others&rsquo;
+        rights, or disrupt the service. We may decline or end an engagement at our
+        discretion.
+      </p>
+
+      <h2>8. Governing law</h2>
+      <p>
+        These terms are governed by the laws of the State of California, United
+        States, without regard to its conflict-of-laws rules.
+      </p>
+
+      <h2>9. Changes</h2>
+      <p>
+        We may update these terms as the services evolve; the &ldquo;last
+        updated&rdquo; date above reflects the current version.
+      </p>
+
+      <h2>10. Contact</h2>
+      <p>
+        Questions? Email
+        <span class="cta-email" data-b="bGlyb3ZhQHByb3Rvbi5tZQ=="></span>.
+      </p>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll<HTMLElement>('.cta-email').forEach((el) => {
+      const addr = atob(el.dataset.b || '');
+      const a = document.createElement('a');
+      a.href = `mailto:${addr}`;
+      a.textContent = addr;
+      el.replaceWith(a);
+    });
+  </script>
+</Base>
