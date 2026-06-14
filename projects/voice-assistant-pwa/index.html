@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><!-- Defense-in-depth CSP (GitHub Pages can't set headers, so meta is the only
+         lever). All scripts ship as one external bundle → strict script-src 'self'.
+         connect-src is the key directive — the only endpoints any script may reach:
+         the read-only gist + Pages feeds (playground/live-proof), and the two
+         self-hosted contact relays the "Start a pilot" form POSTs to (m4 Funnel +
+         the Cloudflare Worker fallback). Nothing else. --><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://gist.githubusercontent.com https://lirova.github.io https://m4.tail7d04cf.ts.net:10000 https://*.workers.dev; base-uri 'none'; form-action 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A hands-free voice assistant that runs on self-hosted infrastructure, using a local LLM and neural text-to-speech to walk through a daily workflow during a commute."><meta name="generator" content="Astro v5.18.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Voice-First Assistant PWA — Portfolio</title><link rel="stylesheet" href="/_astro/index.BYZE_rTy.css"></head> <body> <header class="site-header"> <div class="wrap"> <a href="/" class="brand"><span class="mark"></span>lirova</a> <nav class="nav"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact" class="btn btn-primary">Start a pilot</a> </nav> </div> </header> <main>  <article class="detail wrap"> <a href="/#work" class="back">← Back to work</a> <p class="domain" style="color:var(--accent-dim);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;margin:0 0 8px;">Self-hosted AI / voice</p> <h1>Voice-First Assistant PWA</h1> <div class="meta"> <span class="role">Builder</span> <span>2026</span> <span>FastAPI · WebSockets · Local LLM · Neural TTS · PWA</span> </div> <ul class="highlights"> <li>Fully hands-free — voice in, voice out — designed to be usable while driving</li><li>Runs against a self-hosted local LLM, so no conversation data leaves owned infrastructure</li><li>Streams over WebSockets for low-latency back-and-forth instead of request/response round trips</li><li>Layered text-to-speech with automatic fallback so the assistant always has a voice</li> </ul> <div class="prose"> <p>A progressive web app that turns a tedious daily form-filling chore into a
+spoken conversation. It runs entirely on self-hosted hardware and is built to be
+used hands-free — the original use case was completing a structured daily log
+during a commute, without touching the phone.</p>
+<h2 id="what-i-built">What I built</h2>
+<ul>
+<li>A FastAPI backend speaking to clients over WebSockets, so the dialogue feels
+conversational rather than a series of page loads.</li>
+<li>Integration with a self-hosted local LLM for the reasoning, keeping all
+conversation content on owned infrastructure instead of a third-party API.</li>
+<li>A neural text-to-speech voice with a fallback chain, so a busy or unavailable
+speech server degrades gracefully instead of going silent.</li>
+<li>A PWA frontend that installs to the home screen and works as a first-class
+app on mobile.</li>
+</ul>
+<h2 id="the-idea">The idea</h2>
+<p>Plenty of tasks are simple but annoying enough that they get skipped. Wrapping
+one in a voice interface that meets you where you already are — in the car, with
+your hands busy — changes whether it actually gets done. The engineering
+challenge was latency and reliability: a voice assistant that stutters or stalls
+is worse than no assistant at all.</p> </div>  </article>  </main> <footer class="site-footer"> <div class="wrap"> <span class="f-brand"><span class="mark"></span>lirova</span> <div class="f-links"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact">Start a pilot</a> <a href="/privacy">Privacy</a> <a href="/terms">Terms</a> <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub</a> </div> <span class="f-meta">&copy; 2026 lirova — self-hosted automation, built &amp; run in production.</span> </div> </footer> </body></html>

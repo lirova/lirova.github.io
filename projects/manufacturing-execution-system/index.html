@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><!-- Defense-in-depth CSP (GitHub Pages can't set headers, so meta is the only
+         lever). All scripts ship as one external bundle → strict script-src 'self'.
+         connect-src is the key directive — the only endpoints any script may reach:
+         the read-only gist + Pages feeds (playground/live-proof), and the two
+         self-hosted contact relays the "Start a pilot" form POSTs to (m4 Funnel +
+         the Cloudflare Worker fallback). Nothing else. --><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://gist.githubusercontent.com https://lirova.github.io https://m4.tail7d04cf.ts.net:10000 https://*.workers.dev; base-uri 'none'; form-action 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Full-stack shop-floor execution system tracking every unit through cleanroom, alignment, cure, and end-of-line test — replacing a tangle of spreadsheets."><meta name="generator" content="Astro v5.18.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Manufacturing Execution System — Portfolio</title><link rel="stylesheet" href="/_astro/index.BYZE_rTy.css"></head> <body> <header class="site-header"> <div class="wrap"> <a href="/" class="brand"><span class="mark"></span>lirova</a> <nav class="nav"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact" class="btn btn-primary">Start a pilot</a> </nav> </div> </header> <main>  <article class="detail wrap"> <a href="/#work" class="back">← Back to work</a> <p class="domain" style="color:var(--accent-dim);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;margin:0 0 8px;">Precision camera-module manufacturing</p> <h1>Manufacturing Execution System</h1> <div class="meta"> <span class="role">Lead engineer &amp; maintainer</span> <span>2025–2026</span> <span>Next.js · TypeScript · Prisma · PostgreSQL · Redis · BullMQ · Docker</span> </div> <ul class="highlights"> <li>~67-table Postgres schema modeling the full production lifecycle of a high-volume optics line</li><li>Real-time floor dashboard whose kanban mirrors the physical station layout, not an abstract workflow</li><li>Reporting and export APIs that generate daily production digests and per-operator activity automatically</li><li>Role-based access control with code-enforced process gates so steps can&#39;t be skipped out of order</li> </ul> <div class="prose"> <p>A production-tracking platform for a high-volume precision camera-module line.
+It is the system of record for the whole operation: every unit is followed from
+cleanroom entry through active-alignment, adhesive dispense, oven cure, and
+end-of-line optical test, with full traceability at each station.</p>
+<h2 id="the-problem">The problem</h2>
+<p>The line was being run on a patchwork of spreadsheets and tribal knowledge.
+There was no single source of truth for where a unit was, who had touched it, or
+why a batch had stalled. Quality data lived separately from production data, so
+reconciling “what shipped” against “what passed test” was a manual, error-prone
+chore.</p>
+<h2 id="what-i-built">What I built</h2>
+<ul>
+<li>A relational schema (~67 tables) that models units, batches, stations,
+operators, test results, and shipments — with the kanban board reflecting the
+actual physical floor layout so operators see their station, not a flowchart.</li>
+<li>A background job system for long-running and scheduled work (report
+generation, data sync, reconciliation) on a durable queue.</li>
+<li>Reporting endpoints that produce daily digests, live floor status, and
+per-operator activity, plus production data exports for downstream analysis.</li>
+<li>Process gates enforced in code: certain steps are blocked until their
+prerequisite step is recorded, which closed a recurring class of out-of-order
+defects that training alone never fixed.</li>
+</ul>
+<h2 id="what-i-learned">What I learned</h2>
+<p>Defaults are wrong for production. Database, queue, and runtime settings tuned
+for general use needed deliberate hardening for an always-on shop-floor system.
+And the most reliable way to enforce a process isn’t a wiki page — it’s a
+constraint the software won’t let you violate.</p> </div>  </article>  </main> <footer class="site-footer"> <div class="wrap"> <span class="f-brand"><span class="mark"></span>lirova</span> <div class="f-links"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact">Start a pilot</a> <a href="/privacy">Privacy</a> <a href="/terms">Terms</a> <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub</a> </div> <span class="f-meta">&copy; 2026 lirova — self-hosted automation, built &amp; run in production.</span> </div> </footer> </body></html>

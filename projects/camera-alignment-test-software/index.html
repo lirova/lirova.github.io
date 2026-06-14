@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><!-- Defense-in-depth CSP (GitHub Pages can't set headers, so meta is the only
+         lever). All scripts ship as one external bundle → strict script-src 'self'.
+         connect-src is the key directive — the only endpoints any script may reach:
+         the read-only gist + Pages feeds (playground/live-proof), and the two
+         self-hosted contact relays the "Start a pilot" form POSTs to (m4 Funnel +
+         the Cloudflare Worker fallback). Nothing else. --><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://gist.githubusercontent.com https://lirova.github.io https://m4.tail7d04cf.ts.net:10000 https://*.workers.dev; base-uri 'none'; form-action 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A C++/Qt desktop app that drives active-alignment motion stages and runs machine-vision optical test on camera modules at end of line."><meta name="generator" content="Astro v5.18.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Camera Alignment &amp; End-of-Line Test Software — Portfolio</title><link rel="stylesheet" href="/_astro/index.BYZE_rTy.css"></head> <body> <header class="site-header"> <div class="wrap"> <a href="/" class="brand"><span class="mark"></span>lirova</a> <nav class="nav"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact" class="btn btn-primary">Start a pilot</a> </nav> </div> </header> <main>  <article class="detail wrap"> <a href="/#work" class="back">← Back to work</a> <p class="domain" style="color:var(--accent-dim);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;margin:0 0 8px;">Machine-vision / optical test</p> <h1>Camera Alignment &amp; End-of-Line Test Software</h1> <div class="meta"> <span class="role">Software engineer</span> <span>2025–2026</span> <span>C++17 · Qt · CMake · GMSL2 capture · Computer Vision</span> </div> <ul class="highlights"> <li>Drives precision motion stages for active alignment and captures live sensor video for measurement</li><li>Measures optical sharpness (MTF) and grades pass/fail against per-stage thresholds</li><li>Manages exposure and gain across multiple sensor variants, with calibration values written to on-board EEPROM</li><li>Reports results to backend services over webhooks with a retry queue that survives transient outages</li> </ul> <div class="prose"> <p>A desktop application used at the alignment and end-of-line test stations of a
+camera-module production line. It is the operator-facing tool that physically
+aligns each module’s optics and then proves the result with a machine-vision
+test before the unit can advance.</p>
+<h2 id="what-it-does">What it does</h2>
+<ul>
+<li>Controls precision motion stages to perform active alignment, streaming live
+sensor video so the operator and the algorithm can converge on the optimal
+focus and tilt.</li>
+<li>Runs the optical test suite — including modulation transfer function (MTF)
+measurement across image-field regions — and grades each unit against
+stage-specific thresholds.</li>
+<li>Handles the messy reality of multiple sensor variants: per-sensor exposure and
+gain control, pixel-format differences, and calibration values persisted back
+to each module’s EEPROM.</li>
+<li>Pushes test results to backend services through webhooks, with a local retry
+queue so a momentary network or server hiccup never loses a result.</li>
+</ul>
+<h2 id="engineering-notes">Engineering notes</h2>
+<p>The hard parts were rarely the happy path. A sensor driver that silently
+de-duplicated identical register writes once caused a run of underexposed
+captures; the fix was both a code change and a deeper respect for verifying that
+a setting actually took effect rather than assuming the write succeeded.
+Deployments go out in lockstep across stations so two machines never disagree
+about how a unit was tested.</p> </div>  </article>  </main> <footer class="site-footer"> <div class="wrap"> <span class="f-brand"><span class="mark"></span>lirova</span> <div class="f-links"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact">Start a pilot</a> <a href="/privacy">Privacy</a> <a href="/terms">Terms</a> <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub</a> </div> <span class="f-meta">&copy; 2026 lirova — self-hosted automation, built &amp; run in production.</span> </div> </footer> </body></html>

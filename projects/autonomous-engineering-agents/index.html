@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><!-- Defense-in-depth CSP (GitHub Pages can't set headers, so meta is the only
+         lever). All scripts ship as one external bundle → strict script-src 'self'.
+         connect-src is the key directive — the only endpoints any script may reach:
+         the read-only gist + Pages feeds (playground/live-proof), and the two
+         self-hosted contact relays the "Start a pilot" form POSTs to (m4 Funnel +
+         the Cloudflare Worker fallback). Nothing else. --><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://gist.githubusercontent.com https://lirova.github.io https://m4.tail7d04cf.ts.net:10000 https://*.workers.dev; base-uri 'none'; form-action 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="An issue-to-PR pipeline where AI agents pick up labeled bug reports, implement fixes, open pull requests, run automated review and CI, then merge when green."><meta name="generator" content="Astro v5.18.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Autonomous Engineering Agent Pipeline — Portfolio</title><link rel="stylesheet" href="/_astro/index.BYZE_rTy.css"></head> <body> <header class="site-header"> <div class="wrap"> <a href="/" class="brand"><span class="mark"></span>lirova</a> <nav class="nav"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact" class="btn btn-primary">Start a pilot</a> </nav> </div> </header> <main>  <article class="detail wrap"> <a href="/#work" class="back">← Back to work</a> <p class="domain" style="color:var(--accent-dim);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;margin:0 0 8px;">AI developer tooling</p> <h1>Autonomous Engineering Agent Pipeline</h1> <div class="meta"> <span class="role">Designer &amp; builder</span> <span>2026</span> <span>TypeScript · Node · AI Agents · GitHub Actions · Cron</span> </div> <ul class="highlights"> <li>Turns a labeled issue into a reviewed, CI-green, merged pull request with no human keystrokes in the common case</li><li>Multi-agent design — a bug-hunter finds issues, domain-expert agents implement, a reviewer agent gates the merge</li><li>A review queue surfaces only the PRs that genuinely need a human decision, with a recommended action for each</li><li>Serial runner with a stuck-watcher that auto-skips jobs exceeding a time budget, so one bad task can&#39;t wedge the queue</li> </ul> <div class="prose"> <p>An automation pipeline that treats routine engineering work as something a fleet
+of AI agents can own end to end. A bug report comes in labeled; agents triage
+it, write the fix, open a pull request, run review and continuous integration,
+and merge it when everything is green — escalating to a human only when judgment
+is actually required.</p>
+<h2 id="how-it-works">How it works</h2>
+<ul>
+<li><strong>Intake.</strong> Issues are labeled to enter the queue. A serial runner picks them
+up one at a time, with a watcher that skips any job that runs past its time
+budget so the pipeline never deadlocks on a single stuck task.</li>
+<li><strong>Implementation.</strong> A bug-hunter agent locates root causes; domain-expert
+agents — each primed on a specific part of the codebase — implement the fix
+on a branch and open a PR.</li>
+<li><strong>Gating.</strong> A reviewer agent reads the diff and renders a verdict before
+merge. CI being green is treated as necessary but not sufficient; the review
+verdict is the real gate.</li>
+<li><strong>Human-in-the-loop.</strong> Anything ambiguous, risky, or destructive lands in a
+review queue that shows the PR, its source issue, and a recommended action,
+so a person decides in seconds instead of minutes.</li>
+</ul>
+<h2 id="why-it-matters">Why it matters</h2>
+<p>Most “AI writes code” demos stop at a diff. The interesting engineering is
+everything around the diff: not merging on a false-green CI, not letting an
+agent quietly dodge the spec, bounding cost and runtime, and deciding which
+decisions a human must still make. This pipeline is built around those
+guardrails first and the code generation second.</p> </div>  </article>  </main> <footer class="site-footer"> <div class="wrap"> <span class="f-brand"><span class="mark"></span>lirova</span> <div class="f-links"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact">Start a pilot</a> <a href="/privacy">Privacy</a> <a href="/terms">Terms</a> <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub</a> </div> <span class="f-meta">&copy; 2026 lirova — self-hosted automation, built &amp; run in production.</span> </div> </footer> </body></html>
