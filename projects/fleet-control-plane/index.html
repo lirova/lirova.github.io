@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><!-- Defense-in-depth CSP (GitHub Pages can't set headers, so meta is the only
+         lever). All scripts ship as one external bundle → strict script-src 'self'.
+         connect-src is the key directive — the only endpoints any script may reach:
+         the read-only gist + Pages feeds (playground/live-proof), and the two
+         self-hosted contact relays the "Start a pilot" form POSTs to (m4 Funnel +
+         the Cloudflare Worker fallback). Nothing else. --><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://gist.githubusercontent.com https://lirova.github.io https://m4.tail7d04cf.ts.net:10000 https://*.workers.dev; base-uri 'none'; form-action 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A single control plane for a heterogeneous fleet of machines — one OpenAI-compatible endpoint that capability-tests every backend, fails over automatically, and never dead-ends because it ends in a local no-key fallback tier, with a live dashboard of every box, dependency, and GPU."><meta name="generator" content="Astro v5.18.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Self-Hosted Fleet Control Plane — Portfolio</title><link rel="stylesheet" href="/_astro/index.BYZE_rTy.css"></head> <body> <header class="site-header"> <div class="wrap"> <a href="/" class="brand"><span class="mark"></span>lirova</a> <nav class="nav"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact" class="btn btn-primary">Start a pilot</a> </nav> </div> </header> <main>  <article class="detail wrap"> <a href="/#work" class="back">← Back to work</a> <p class="domain" style="color:var(--accent-dim);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;margin:0 0 8px;">Infrastructure / AI platform tooling</p> <h1>Self-Hosted Fleet Control Plane</h1> <div class="meta"> <span class="role">Designer &amp; builder</span> <span>2026</span> <span>Python · FastAPI · Tailscale · asyncio · launchd · Server-Sent Events</span> </div> <ul class="highlights"> <li>One endpoint for the whole fleet — apps ask for a capability tier and the plane routes to the least-loaded healthy backend, fails over between them, and autoscales burst capacity under load</li><li>Health is a real capability test (a one-token generation), not a reachability ping — so a backend that answers but can&#39;t actually serve is treated as down</li><li>Never dead-ends — when every backend is gone, requests fall through to a local fallback that runs on whatever machine made the call, so a total outage degrades instead of failing</li><li>Live dashboard — per-machine status, a dependency-graph topology parsed from a single source-of-truth map, GPU/memory per box across Apple, AMD and NVIDIA hardware, and a streaming failover event log</li><li>Works across every OS in the fleet with zero per-box install by riding the existing private mesh network, reaching each machine over the mesh the same way whether it runs macOS, Linux or Windows</li> </ul> <div class="prose"> <p>A control plane that turns a closet full of mismatched machines — laptops, mini
+servers, GPU desktops — into one dependable resource. Applications talk to a
+single OpenAI-compatible endpoint; behind it, the plane decides which machine
+should answer, proves that machine can actually do the work, and quietly fails
+over when something drops. A web dashboard shows the whole fleet at a glance.</p>
+<h2 id="the-problem">The problem</h2>
+<p>Self-hosted compute is brittle in ways cloud users never see. A box goes to
+sleep. A model crashes but the server still answers its status check. A laptop
+leaves the house. The “always-on” server reboots. Each of these silently breaks
+something three apps over, and you find out when a demo dies. The goal was a
+layer that makes the fleet <em>boringly reliable</em> — and legible enough that you can
+see exactly what’s healthy without sshing into five machines.</p>
+<h2 id="how-it-works">How it works</h2>
+<ul>
+<li><strong>One endpoint, capability tiers.</strong> Apps request a tier (fast, quality, heavy,
+vision) instead of naming a machine. The plane routes to the least-loaded
+healthy backend for that tier, load-balances, and pins models to boxes so the
+hardware never thrashes swapping models in and out.</li>
+<li><strong>Capability-tested health.</strong> Every backend is checked with an actual
+one-token generation, not a reachability ping. This catches the nastiest
+failure mode — a server that is “up” but cannot serve — which a ping misses
+entirely.</li>
+<li><strong>A failover chain that never dead-ends.</strong> Backends are tried in order; if all
+of them are gone, the request falls through to a local fallback tier that runs
+on whatever machine made the call. A total outage degrades to “slower” instead
+of “down.”</li>
+<li><strong>One source of truth for topology.</strong> The dependency graph — what each service
+needs and what depends on it — lives in a single human-readable map that a
+live edge-checker keeps honest. The dashboard renders that same graph, so the
+picture can’t drift from reality.</li>
+<li><strong>Cross-platform with zero install.</strong> The plane reaches every machine over the
+existing private mesh network, so it monitors and controls a Windows GPU box
+exactly the way it does a Mac — no agent to install on each node.</li>
+</ul>
+<h2 id="why-it-matters">Why it matters</h2>
+<p>Most “LLM gateway” projects stop at routing. The hard, interesting part is
+everything that keeps the fleet trustworthy: proving a backend can really serve
+before you send it traffic, degrading instead of failing when the network is
+having a bad day, and making the whole system observable enough that a problem
+announces itself instead of hiding until the next demo. It is designed so the
+same code runs a personal fleet today and, with a different config, someone
+else’s fleet tomorrow — membership, credentials, and process control are all
+pluggable seams rather than hardcoded assumptions.</p> </div>  </article>  </main> <footer class="site-footer"> <div class="wrap"> <span class="f-brand"><span class="mark"></span>lirova</span> <div class="f-links"> <a href="/#demo">Demo</a> <a href="/#work">Work</a> <a href="/#contact">Start a pilot</a> <a href="/privacy">Privacy</a> <a href="/terms">Terms</a> <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub</a> </div> <span class="f-meta">&copy; 2026 lirova — self-hosted automation, built &amp; run in production.</span> </div> </footer> </body></html>
