@@ -1,36 +1,37 @@
 ---
-title: Inbox-to-Action Automation Bank
+title: workbank — one task board
 role: Builder
-domain: Workflow automation
-summary: A pipeline that ingests email and calendar, extracts genuine action items, and feeds them into an automation queue — aimed at being usable by non-engineers.
-stack: [TypeScript, Node, Gmail API, Calendar API, OAuth]
+domain: Web app · workflow tool
+summary: Requests reached me through email, calendar, GitHub and Slack. workbank pulled them into one board; I closed 328 tasks through it from June to August 2026.
+stack: [TypeScript, Node, SQLite, Gmail/Calendar, GitHub API, Slack API]
+status: Used before
 highlights:
-  - Ingests email and calendar events and distills them into a clean list of actionable tasks
-  - A gate filters noise so only real, well-formed action items reach the work queue
-  - Robust OAuth handling, including token rotation to survive expiry without manual intervention
-  - Designed for a non-engineer end user — the north star is someone non-technical running it unaided
+  - "Problem: requests were spread across email, calendar, GitHub and Slack, and some got lost."
+  - "Built: readers for each source, an AI pass that writes the real ask, encrypted storage and a server-rendered board."
+  - "Result: 2,771 messages read and 1,207 asks pulled out since June 6, 2026; I marked 328 done through the board by August 7."
 year: "2026"
-order: 5
+order: 3
 ---
 
-A pipeline that watches the usual sources of "things I need to do" — email and
-calendar — and turns them into a structured, deduplicated queue of action items
-that can feed downstream automation.
+## The problem
 
-## What it does
+Requests reached me in four places: email, calendar, GitHub and Slack. Some got
+lost between them.
 
-- Connects to mail and calendar over their APIs, with OAuth handled carefully:
-  scopes, console configuration, and automatic token rotation so the
-  integration doesn't silently die when a token expires.
-- Extracts candidate tasks from messages and events, then passes them through a
-  gate that only admits genuine, well-formed action items — keeping the queue
-  signal-heavy instead of a dumping ground.
-- Hands clean items to an automation layer that can act on them.
+## What I built
 
-## The north star
+- **Readers.** Each source has its own reader. They run on a timer on my home
+  server and add new items to a local SQLite database.
+- **AI pass.** A model reads each new message and writes a one-line ask: who
+  wants what, and by when.
+- **Storage.** Subject, body, sender and summary are encrypted at rest with
+  AES-256-GCM.
+- **Board.** A TypeScript server renders the board as plain HTML. Sort and
+  filter live in the URL, so any view can be bookmarked.
 
-The goal isn't a tool for engineers. It's a tool a non-technical person can run
-on their own to offload the administrative tax of a busy inbox. That framing
-forces hard decisions about defaults, error handling, and how much the system is
-allowed to do without asking — because the person on the other end can't read a
-stack trace.
+## Result
+
+Since June 6, 2026 it has read 2,771 messages and pulled out 1,207 asks. I
+marked 328 of them done through the board, the last on August 7. It still syncs
+every day, but I've stopped working from the board, so it's labeled "used
+before".

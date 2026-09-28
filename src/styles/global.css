@@ -137,9 +137,11 @@ code, .mono { font-family: var(--mono); }
 .nav a { color: var(--text-dim); font-size: 0.9rem; font-weight: 500; padding: 7px 12px; border-radius: 8px; }
 .nav a:hover { color: var(--text); background: var(--bg-glass); }
 .nav .btn { margin-left: 8px; padding: 8px 15px; }
+/* .nav a (0,1,1) beats .btn-primary (0,1,0); without this the nav button's text is teal on teal */
+.nav a.btn-primary, .nav a.btn-primary:hover { color: #04221d; }
 
 /* ---- hero ---- */
-.hero { position: relative; padding: 120px 0 72px; }
+.hero { position: relative; padding-block: 120px 72px; }
 .hero .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--mono); color: var(--accent); font-size: 0.78rem;
@@ -172,7 +174,7 @@ code, .mono { font-family: var(--mono); }
 @keyframes proof-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
 /* ---- section ---- */
-.section { position: relative; padding: 64px 0 80px; }
+.section { position: relative; padding-block: 64px 80px; }
 .section + .section { border-top: 1px solid var(--border); }
 .section-title {
   font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.12em;
@@ -218,7 +220,7 @@ code, .mono { font-family: var(--mono); }
 .tag { font-family: var(--mono); font-size: 0.72rem; color: var(--text-faint); border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px; background: var(--bg-1); }
 
 /* ---- project detail ---- */
-.detail { padding: 64px 0 88px; }
+.detail { padding-block: 64px 88px; }
 .back { font-family: var(--mono); font-size: 0.85rem; color: var(--text-dim); display: inline-block; margin-bottom: 32px; }
 .detail h1 { font-size: clamp(2rem, 4vw, 2.8rem); margin: 0 0 12px; }
 .detail .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--text-faint); font-family: var(--mono); font-size: 0.82rem; margin: 0 0 30px; }
@@ -300,7 +302,19 @@ code, .mono { font-family: var(--mono); }
 .site-footer .f-links a:hover { color: var(--text); }
 
 @media (max-width: 640px) {
-  .hero { padding: 84px 0 48px; }
+  .hero { padding-block: 84px 48px; }
   .contact-form .cf-row { grid-template-columns: 1fr; }
   .site-footer .wrap { flex-direction: column; align-items: flex-start; }
 }
+
+/* ---- honest status badge (Used daily / Runs daily / Used before / Shelved) ---- */
+.status {
+  display: inline-block; vertical-align: middle; margin-left: 8px;
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.04em;
+  padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border-2); white-space: nowrap;
+}
+.status-daily { color: var(--accent); border-color: rgba(94,234,212,.35); background: rgba(94,234,212,.08); }
+.status-before { color: var(--text-dim); }
+.status-shelved { color: #e0af68; border-color: rgba(224,175,104,.35); background: rgba(224,175,104,.08); }
+.card-status { margin: -2px 0 10px; }
+.card-status .status { margin-left: 0; }

@@ -24,6 +24,7 @@ const d = project.data;
     <div class="meta">
       <span class="role">{d.role}</span>
       {d.year && <span>{d.year}</span>}
+      {d.status && <span class={`status ${d.status === 'Shelved' ? 'status-shelved' : d.status === 'Used before' ? 'status-before' : 'status-daily'}`} style="margin-left:0;">{d.status}</span>}
       <span>{d.stack.join(' · ')}</span>
     </div>
 

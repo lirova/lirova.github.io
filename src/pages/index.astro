@@ -7,156 +7,53 @@ const projects = (await getCollection('projects'))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
 
-// Two self-hosted relays — the browser tries the m4 primary first, silently
-// falls back to our Cloudflare Worker. Neither exposes any email (scrape-proof).
-// Both origins are allow-listed in Base.astro's CSP connect-src.
-// Set RELAY_FALLBACK after `wrangler deploy` (see ~/dev/tools/lead-relay/README.md).
-const RELAY_PRIMARY = 'https://m4.tail7d04cf.ts.net:10000/lead';
-const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
+// The contact form POSTs to one self-hosted relay (m4, public over Tailscale
+// Funnel). No email address is ever in the page. The origin is allow-listed in
+// Base.astro's CSP connect-src.
+const RELAY = 'https://m4.tail7d04cf.ts.net:10000/lead';
 ---
 
-<Base title="Engineering Portfolio">
+<Base title="lirova · Engineering Portfolio">
   <section class="hero wrap">
-    <p class="eyebrow">Systems · Platforms · Automation</p>
-    <h1>Systems that run in production.<br />Automation that runs itself.</h1>
+    <p class="eyebrow">Front end · Full stack · Self-hosted</p>
+    <h1>Web apps I build,<br />and use every day.</h1>
     <p class="lede">
-      Production-grade automation and AI systems &mdash; built, run, and proven
-      live. Self-hosted in your environment, so your code and data never leave
-      the building.
+      I build browser front ends and the servers behind them, to fix problems I
+      actually have. Each project below says what the problem was, what I built,
+      and the result I can show, and whether I still use it.
     </p>
     <div class="links">
-      <a href="/#contact" class="btn btn-primary">Start a pilot &rarr;</a>
-      <a href="/#demo" class="btn btn-ghost">Watch it work</a>
+      <a href="/#work" class="btn btn-primary">See the work &rarr;</a>
+      <a href="/#demo" class="btn btn-ghost">Watch the demos</a>
     </div>
-    <!-- live-proof badge: hidden by default via display:none (NOT the `hidden`
-         attr, which an inline display would override); the script flips it to
-         inline-flex only when the feed is present AND fresh (<24h). -->
-    <p id="live-proof" class="proof-pill" style="display:none;">
-      <span class="dot"></span>
-      <span id="live-proof-text"></span>
-    </p>
   </section>
 
-  <!-- credibility band: proof over promises. PR count is live (from the same
-       gist as the strip), with a static fallback so it's never blank/stale-looking. -->
   <section class="metrics">
     <div class="wrap">
-      <div class="metric"><div class="num"><span id="m-prs">14</span></div><div class="lbl">PRs merged, agent-authored</div></div>
-      <div class="metric"><div class="num">0</div><div class="lbl">human keystrokes</div></div>
-      <div class="metric"><div class="num">24/7</div><div class="lbl">dogfooded in production</div></div>
-      <div class="metric"><div class="num">Never</div><div class="lbl">does your data leave your building</div></div>
-    </div>
-  </section>
-
-  <section id="how" class="section wrap">
-    <div class="section-head">
-      <p class="section-title">How it works</p>
-      <h2>Autonomous where it should be. Supervised where it matters.</h2>
-      <p>
-        Not &ldquo;set it and forget it.&rdquo; Automation you can actually trust to
-        run unattended &mdash; because it&apos;s bounded by your environment and by
-        its own review gates.
-      </p>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="n">1</div>
-        <h3>Runs in your environment</h3>
-        <p>Self-hosted on your machines, with your credentials and your AI keys.
-          Your code and data never leave the building &mdash; I never receive a copy.</p>
-      </div>
-      <div class="step">
-        <div class="n">2</div>
-        <h3>Does the work, unattended</h3>
-        <p>Label the task and walk away. The agent takes it end to end and keeps
-          going around the clock &mdash; no human keystrokes on the routine path.</p>
-      </div>
-      <div class="step">
-        <div class="n">3</div>
-        <h3>Reviews itself before anything ships</h3>
-        <p>Guardrails first: it won&apos;t merge on a false-green, won&apos;t dodge the
-          spec, bounds its own cost and runtime, and escalates the real calls to you.</p>
-      </div>
+      <div class="metric"><div class="num">21,858</div><div class="lbl">AI requests through my home fleet endpoint since Aug 4, 2026</div></div>
+      <div class="metric"><div class="num">1,318</div><div class="lbl">spoken clips from my voice page in one week</div></div>
+      <div class="metric"><div class="num">1,400+</div><div class="lbl">commits to the production web app I lead at work</div></div>
+      <div class="metric"><div class="num">980+</div><div class="lbl">commits to my no-framework browser game since July</div></div>
     </div>
   </section>
 
   <section id="demo" class="section wrap">
     <div class="section-head">
-      <p class="section-title">See them work</p>
-      <h2>Three systems, running in production today.</h2>
-      <p>Real screens, no mockups &mdash; under 30 seconds each.</p>
+      <p class="section-title">Demos</p>
+      <h2>Real screens, recorded in June 2026.</h2>
+      <p>Each clip is under 35 seconds and uses sample data.</p>
     </div>
 
     <div class="demo-block">
-      <h3>daki &mdash; issues in, reviewed merges out</h3>
+      <h3>workbank: one task board for everything waiting on me <span class="status status-before">Used before</span></h3>
       <p>
-        Label a GitHub issue and walk away: an agent takes it, writes the fix,
-        opens a PR, reviews it against the tests, and merges. No human keystrokes.
-        This footage is a real, unedited run:
+        Requests reached me in four places and some got lost. workbank pulls
+        email, calendar, GitHub and Slack into one board, and an AI model writes
+        the real ask for each message. Since June 6, 2026 it has pulled out 1,207
+        asks, and I closed 328 of them through the board by August 7.
       </p>
       <div class="media-frame">
-        <div class="bar"><i></i><i></i><i></i><span>daki — real run</span></div>
-        <video controls preload="metadata" poster="/daki-demo-v3-poster.jpg">
-          <source src="/daki-demo-v3.mp4" type="video/mp4" />
-          <a href="/daki-demo-v3.mp4">download the clip</a>.
-        </video>
-      </div>
-    </div>
-    <!-- Interactive playground: type a change, hand off to GitHub for the
-         1-click submit (the free account is the spam gate), then watch the
-         REAL workflow run animate live off GitHub's public, read-only API.
-         No secrets, no backend — the static page only ever READS public data. -->
-    <div class="dk" id="dk">
-      <div class="dk-head">
-        <strong>🎨 Don&apos;t take the video&apos;s word for it &mdash; drive the pipeline yourself</strong>
-        <span>Describe one small change below. An agent turns it into a reviewed, auto-merged PR
-          that repaints the page &mdash; in about a minute. Watch it happen live, right here.</span>
-      </div>
-
-      <div class="dk-box">
-        <textarea id="dk-input" maxlength="280" rows="2"
-          placeholder="e.g. make it rain at night and change the message to Hello from Tokyo"></textarea>
-        <div class="dk-chips">
-          <span class="dk-chips-label">Try:</span>
-          <button type="button" class="dk-chip">make it snow at night</button>
-          <button type="button" class="dk-chip">add a cat on the roof</button>
-          <button type="button" class="dk-chip">sunset sky, message = Hello from Tokyo</button>
-          <button type="button" class="dk-chip">turn the ground to water and add three ducks</button>
-        </div>
-        <div class="dk-send-row">
-          <button type="button" id="dk-send" class="dk-send">Send it &rarr;</button>
-          <span class="dk-note">Opens a one-click confirm on GitHub (a free account is the spam gate).
-            The agent reviews and merges it &mdash; no human edits.</span>
-        </div>
-      </div>
-
-      <div class="dk-live">
-        <div class="dk-live-head">
-          <span class="dk-dot" id="dk-dot"></span>
-          <span id="dk-status">Loading live pipeline status&hellip;</span>
-        </div>
-        <div class="dk-stages" id="dk-stages" aria-label="pipeline stages"></div>
-        <div id="dk-stage" class="dk-stage">
-          <div id="dk-weather"></div><div id="dk-ground"></div><div id="dk-objects"></div>
-        </div>
-        <div id="dk-marquee" class="dk-marquee"></div>
-        <p class="dk-proof">
-          Live public sandbox &mdash;
-          <a href="https://github.com/lirova/daki-playground/pulls?q=is%3Apr+is%3Amerged"
-             target="_blank" rel="noopener">every repaint is a real merged PR &#8599;</a>
-        </p>
-      </div>
-    </div>
-
-    <div class="demo-block" style="margin-top:3rem;">
-      <h3>workbank &mdash; one board of what actually needs you</h3>
-      <p>
-        Email, calendar, GitHub, GitLab, Slack &mdash; read by AI into a single
-        task board. It plans your day around your real hours, learns your pace,
-        and keeps everything in an encrypted bank on your own machine:
-      </p>
-      <div class="media-frame">
-        <div class="bar"><i></i><i></i><i></i><span>workbank — live UI</span></div>
+        <div class="bar"><i></i><i></i><i></i><span>workbank &mdash; sample data</span></div>
         <video controls preload="metadata" poster="/workbank-demo-v2-poster.jpg">
           <source src="/workbank-demo-v2.mp4" type="video/mp4" />
           <a href="/workbank-demo-v2.mp4">download the clip</a>.
@@ -165,17 +62,36 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
     </div>
 
     <div class="demo-block">
-      <h3>voicebot &mdash; your work, narrated</h3>
+      <h3>Voice console: my AI sessions, read aloud <span class="status status-daily">Used daily</span></h3>
       <p>
-        Every agent session and inbox summary, read aloud to your phone in a
-        per-project voice &mdash; and you can talk back. Built for hands-free
-        operating: commutes, workshops, anywhere your screen isn&apos;t:
+        I run several AI coding sessions at once and couldn&apos;t keep up with
+        reading them. This phone page reads each reply out loud and takes my
+        answer by voice. In the week of September 21, 2026 I used it every day:
+        1,318 spoken clips. The clip shows the first version; I use its successor.
       </p>
       <div class="media-frame">
-        <div class="bar"><i></i><i></i><i></i><span>voicebot — debut</span></div>
+        <div class="bar"><i></i><i></i><i></i><span>voice console &mdash; first version</span></div>
         <video controls preload="metadata" poster="/voicebot-demo-v1-poster.jpg">
           <source src="/voicebot-demo-v1.mp4" type="video/mp4" />
           <a href="/voicebot-demo-v1.mp4">download the clip</a>.
+        </video>
+      </div>
+    </div>
+
+    <div class="demo-block">
+      <h3>daki: GitHub issues in, reviewed pull requests out <span class="status status-shelved">Shelved</span></h3>
+      <p>
+        Small bug fixes waited on me. daki took a labeled GitHub issue, wrote the
+        fix, opened a pull request, reviewed it and merged it. Result: 6
+        agent-written pull requests merged between June 7 and June 28, 2026.
+        It&apos;s shelved now, because a general coding agent does this job
+        better for me. The clip is a real, unedited run.
+      </p>
+      <div class="media-frame">
+        <div class="bar"><i></i><i></i><i></i><span>daki &mdash; real run, June 2026</span></div>
+        <video controls preload="metadata" poster="/daki-demo-v3-poster.jpg">
+          <source src="/daki-demo-v3.mp4" type="video/mp4" />
+          <a href="/daki-demo-v3.mp4">download the clip</a>.
         </video>
       </div>
     </div>
@@ -183,8 +99,8 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
 
   <section id="work" class="section wrap">
     <div class="section-head">
-      <p class="section-title">Selected work</p>
-      <h2>Shipped systems, end to end.</h2>
+      <p class="section-title">Work</p>
+      <h2>Problem, what I built, and the result.</h2>
     </div>
     <div class="grid">
       {projects.map((p) => (
@@ -194,26 +110,19 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
           summary={p.data.summary}
           domain={p.data.domain}
           stack={p.data.stack}
+          status={p.data.status}
         />
       ))}
     </div>
   </section>
 
   <section id="contact" class="section wrap" style="text-align:center;">
-    <p class="section-title" style="margin-bottom:.7rem;">Start a pilot</p>
-    <h2 style="font-size:clamp(1.8rem,3.6vw,2.5rem);margin:0 0 1.1rem;">Something in your stack should run itself.</h2>
-    <p style="max-width:54ch;margin:0 auto 1.2rem;color:var(--text-dim);">
-      Issue triage, deploy pipelines, inbox overload, status reporting &mdash;
-      if a human is doing it on a schedule, it&apos;s a candidate. Tell me what
-      it is, and I&apos;ll tell you how I&apos;d automate it.
+    <p class="section-title" style="margin-bottom:.7rem;">Contact</p>
+    <h2 style="font-size:clamp(1.8rem,3.6vw,2.5rem);margin:0 0 1.1rem;">Want to talk about a role or a project?</h2>
+    <p style="max-width:54ch;margin:0 auto 1.8rem;color:var(--text-dim);">
+      Send a note and I&apos;ll reply by email.
     </p>
-    <p style="max-width:54ch;margin:0 auto 1.8rem;opacity:.8;">
-      And if your code can&apos;t leave your building: everything I build runs
-      <strong>self-hosted, in your environment, with your credentials</strong>
-      &mdash; local AI included. I never receive a copy.
-    </p>
-    <form id="contact-form" class="contact-form"
-      data-primary={RELAY_PRIMARY} data-fallback={RELAY_FALLBACK}>
+    <form id="contact-form" class="contact-form" data-relay={RELAY}>
       <!-- honeypot: humans never see/fill this; bots do, and get dropped -->
       <input type="checkbox" name="botcheck" class="cf-hp" tabindex="-1" autocomplete="off" />
       <div class="cf-row">
@@ -224,395 +133,31 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
       </div>
       <label class="cf-field"><span>Your email <em>(so I can reply)</em></span>
         <input type="email" name="email" required autocomplete="email" /></label>
-      <label class="cf-field"><span>What should run itself?</span>
+      <label class="cf-field"><span>Message</span>
         <textarea name="message" rows="4" required
-          placeholder="The workflow, the stack, what success looks like."></textarea></label>
-      <button type="submit" class="btn btn-primary cf-send">Tell me what should run itself &rarr;</button>
-      <p class="cf-trust">Goes straight to me &mdash; no account, no newsletter, I reply personally.</p>
+          placeholder="The role or project, and how to reach you."></textarea></label>
+      <button type="submit" class="btn btn-primary cf-send">Send &rarr;</button>
+      <p class="cf-trust">Goes straight to me. No account, no newsletter.</p>
       <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
     </form>
     <p style="margin:1.2rem 0 0;font-size:.85rem;opacity:.55;">
-      Prefer GitHub?
+      Or on GitHub:
       <a href="https://github.com/lirova" target="_blank" rel="noopener" style="color:inherit;">github.com/lirova</a>
     </p>
   </section>
 
-  <style is:global>
-    /* ---- daki interactive playground (dk-) ---- */
-    .dk {
-      margin: 1.2rem 0 0;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--bg-card);
-      overflow: hidden;
-    }
-    .dk-head { padding: 1.1rem 1.3rem 0.4rem; }
-    .dk-head strong { color: var(--accent); font-size: 1.02rem; }
-    .dk-head span { display: block; margin-top: 0.35rem; opacity: 0.8; font-size: 0.92rem; }
-    .dk-box { padding: 0.9rem 1.3rem 1.1rem; }
-    #dk-input {
-      width: 100%;
-      resize: vertical;
-      min-height: 3.1rem;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.7rem 0.85rem;
-      font-family: var(--sans);
-      font-size: 0.98rem;
-      line-height: 1.45;
-    }
-    #dk-input:focus { outline: none; border-color: var(--accent-dim); }
-    .dk-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin: 0.7rem 0; }
-    .dk-chips-label { font-family: var(--mono); font-size: 0.78rem; color: var(--text-faint); }
-    .dk-chip {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      background: var(--bg-elev);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 0.28rem 0.7rem;
-      cursor: pointer;
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .dk-chip:hover { border-color: var(--accent-dim); color: var(--text); }
-    .dk-send-row { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
-    .dk-send {
-      flex: none;
-      background: var(--accent);
-      color: #06241f;
-      font-weight: 700;
-      font-size: 0.95rem;
-      border: none;
-      border-radius: 10px;
-      padding: 0.6rem 1.25rem;
-      cursor: pointer;
-    }
-    .dk-send:hover { filter: brightness(1.08); }
-    .dk-send:disabled { opacity: 0.5; cursor: default; filter: none; }
-    .dk-note { font-size: 0.78rem; color: var(--text-faint); max-width: 46ch; }
-
-    .dk-live { border-top: 1px solid var(--border); padding: 1rem 1.3rem 1.2rem; background: var(--bg-elev); }
-    .dk-live-head { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.82rem; color: var(--text-dim); }
-    .dk-dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--text-faint); flex: none; }
-    .dk-dot.live { background: #4fd1a5; box-shadow: 0 0 7px #4fd1a5; animation: dk-pulse 1.2s ease-in-out infinite; }
-    .dk-dot.idle { background: #6b7280; }
-    .dk-dot.warn { background: #f4a261; }
-    @keyframes dk-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
-
-    .dk-stages { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0 1rem; }
-    .dk-pill {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.03em;
-      padding: 0.3rem 0.6rem;
-      border-radius: 7px;
-      border: 1px solid var(--border);
-      color: var(--text-faint);
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: all 0.2s;
-    }
-    .dk-pill::before { content: "○"; font-size: 0.7rem; }
-    .dk-pill.active { color: #06241f; background: var(--accent); border-color: var(--accent); }
-    .dk-pill.active::before { content: "◐"; }
-    .dk-pill.done { color: #4fd1a5; border-color: rgba(79,209,165,0.5); }
-    .dk-pill.done::before { content: "●"; }
-    .dk-pill.fail { color: #f87171; border-color: rgba(248,113,113,0.5); }
-    .dk-pill.fail::before { content: "✕"; }
-    .dk-pill.skip { opacity: 0.45; }
-    .dk-pill.skip::before { content: "–"; }
-    /* In-progress shimmer — an honest "working" state, NOT a completed (●) mark. */
-    .dk-pill.working { color: var(--accent); border-color: var(--accent); animation: dk-pulse 1.1s ease-in-out infinite; }
-    .dk-pill.working::before { content: "◌"; }
-
-    .dk-stage {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      container-type: inline-size;
-    }
-    .dk-stage.sky-day    { background: linear-gradient(#74c0e8, #cfeefe 75%); }
-    .dk-stage.sky-sunset { background: linear-gradient(#3c2a55, #c4504e 60%, #f2a35e 85%); }
-    .dk-stage.sky-night  { background: linear-gradient(#070b1d, #1b2350 80%); }
-    .dk-stage.sky-dawn   { background: linear-gradient(#4a5a8a, #d99aa6 70%, #f5d9a8 90%); }
-    #dk-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 22%; }
-    .ground-grass    { background: linear-gradient(#4f9d4f, #2f6d33); }
-    .ground-sand     { background: linear-gradient(#e8cf94, #c9a866); }
-    .ground-snow     { background: linear-gradient(#eef3f8, #c9d6e4); }
-    .ground-water    { background: linear-gradient(#3a7fb5, #1d4f7e); }
-    .ground-pavement { background: linear-gradient(#8a8a92, #5c5c64); }
-    .dk-obj { position: absolute; transform: translate(-50%, -50%); user-select: none; line-height: 1; text-shadow: 0 2px 6px rgba(0,0,0,.25); }
-    .dk-obj.s1 { font-size: clamp(12px, 4cqw, 20px); }
-    .dk-obj.s2 { font-size: clamp(18px, 7cqw, 34px); }
-    .dk-obj.s3 { font-size: clamp(26px, 11cqw, 52px); }
-    .dk-particle { position: absolute; top: -8%; user-select: none; animation: dk-fall linear infinite; }
-    @keyframes dk-fall { to { transform: translateY(120%) translateY(40vh); } }
-    .dk-twinkle { position: absolute; user-select: none; animation: dk-twinkle ease-in-out infinite alternate; }
-    @keyframes dk-twinkle { from { opacity: 0.15; } to { opacity: 1; } }
-
-    .dk-marquee {
-      margin-top: 0.6rem;
-      padding: 0.65rem 0.9rem;
-      border-radius: 8px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      font-size: 0.92rem;
-      color: var(--accent);
-      text-align: center;
-      min-height: 1.2rem;
-    }
-    .dk-proof { margin: 0.7rem 0 0; font-family: var(--mono); font-size: 0.76rem; color: var(--text-faint); }
-    .dk-proof a { color: var(--text-dim); }
-    .dk-proof a:hover { color: var(--accent); text-decoration: none; }
-  </style>
-
   <script>
-    // Live proof strip (hero): the pipeline self-publishes run stats to a public
-    // gist; render them, or stay hidden on failure. Kept in this same script so
-    // the whole page ships one external bundle (no inline script → strict CSP).
-    (() => {
-      const PROOF_URL =
-        'https://gist.githubusercontent.com/lirova/f28d2d5303e3a17c6243760f018395a1/raw/daki-proof.json';
-      fetch(PROOF_URL, { cache: 'no-cache' })
-        .then((r) => r.json())
-        .then((d) => {
-          // metrics band: live PR count (updates even if the strip is hidden for
-          // staleness — the count only ever climbs, so a slightly old value is fine)
-          const mp = document.getElementById('m-prs');
-          if (mp && d.prs_merged_total) mp.textContent = String(d.prs_merged_total);
-          const mins = Math.max(
-            0,
-            Math.round((Date.now() - new Date(d.last_pipeline_run_at).getTime()) / 60000)
-          );
-          const ago = mins < 90 ? `${mins} min ago` : `${Math.round(mins / 60)} h ago`;
-          const el = document.getElementById('live-proof-text');
-          if (!el || !d.agent_prs_merged) return;
-          // Staleness guard: if the feed is >24h old, keep the strip HIDDEN rather
-          // than claim "running right now" next to an old timestamp. A dead feed
-          // degrades to invisible, never to a visible contradiction.
-          if (!Number.isFinite(mins) || mins > 1440) return;
-          el.textContent =
-            `LIVE — the agent pipeline below is running right now: ` +
-            `${d.agent_prs_merged} issues turned into merged PRs unattended · ` +
-            `last run ${ago} · self-published stats`;
-          const wrap = document.getElementById('live-proof');
-          if (wrap) wrap.style.display = 'inline-flex';
-        })
-        .catch(() => {});
-    })();
-
-    // daki interactive playground — submit hands off to GitHub (the login is the
-    // spam gate). The live view reads a self-published status feed + scene.json
-    // STRAIGHT FROM PAGES — no GitHub API, so no unauthenticated 60 req/hr/IP
-    // rate limit (which is what broke the old API-polled version). Every string
-    // from the network is rendered with textContent ONLY, so untrusted issue/run
-    // text can never become markup.
-    (() => {
-      const REPO = 'lirova/daki-playground';
-      const BASE = 'https://lirova.github.io/daki-playground';
-      const STATUS = `${BASE}/status.json`;
-      const SCENE = `${BASE}/scene.json`;
-      const CACHE = 'dk-status-v1';
-      const ISSUE_NEW = (text: string) =>
-        `https://github.com/${REPO}/issues/new?template=playground-request.yml&request=${encodeURIComponent(text)}`;
-
-      const $ = (id: string) => document.getElementById(id);
-      const input = $('dk-input') as HTMLTextAreaElement | null;
-      const send = $('dk-send') as HTMLButtonElement | null;
-      const statusEl = $('dk-status');
-      const dot = $('dk-dot');
-      const stagesEl = $('dk-stages');
-      if (!input || !send || !stagesEl) return;
-
-      const STAGES = ['GUARD', 'SANITIZE', 'INTERPRET', 'VALIDATE', 'REVIEW', 'PR', 'MERGE'];
-      const KEYS = ['guard', 'sanitize', 'interpret', 'validate', 'review', 'pr', 'merge'];
-      const pills: HTMLSpanElement[] = STAGES.map((label) => {
-        const p = document.createElement('span');
-        p.className = 'dk-pill';
-        p.textContent = label; // textContent only — fixed labels, never network text
-        stagesEl.appendChild(p);
-        return p;
-      });
-      const setPill = (i: number, cls: string) => {
-        pills[i].className = 'dk-pill' + (cls ? ' ' + cls : '');
-        if (cls !== 'working') pills[i].style.animationDelay = '';
-      };
-      const setDot = (cls: string) => { if (dot) dot.className = 'dk-dot' + (cls ? ' ' + cls : ''); };
-      const ago = (iso: string) => {
-        const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
-        return m < 1 ? 'just now' : m < 90 ? m + ' min ago' : Math.round(m / 60) + ' h ago';
-      };
-
-      let lastIssue = 0;
-      let everPainted = false;
-
-      // Paint the 7 pills + status line from a status.json object. Returns the
-      // run, or null. Does NOT touch the scene (that's loadScene's job).
-      function paintStatus(st: any): any {
-        const run = st && st.last_run;
-        if (!run) return null;
-        const stages = run.stages || {};
-        KEYS.forEach((k, i) => {
-          const v = stages[k];
-          setPill(i, v === 'done' ? 'done' : v === 'fail' ? 'fail' : v === 'skip' ? 'skip' : '');
-        });
-        setDot('idle');
-        const verb = run.outcome === 'shipped' ? 'shipped' : run.outcome === 'rejected' ? 'reviewed' : 'ran';
-        const sm = String(run.summary || '').replace(/[^A-Za-z0-9 .,!?'&()+:;#%-]/g, '').slice(0, 80);
-        if (statusEl) {
-          statusEl.textContent =
-            `Last request ${verb}${sm ? ` — “${sm}”` : ''} · ${ago(run.finished_at || st.updated_at)}.` +
-            ` Send one above to run it again, live.`;
-        }
-        everPainted = true;
-        return run;
-      }
-
-      function applyStatus(st: any) {
-        const run = paintStatus(st);
-        if (!run) return null;
-        try { localStorage.setItem(CACHE, JSON.stringify(st)); } catch {}
-        if (run.issue !== lastIssue) { lastIssue = run.issue; loadScene(); }
-        return run;
-      }
-
-      // Instant first paint from the last-known cache (no blank flash, survives
-      // an offline/Pages hiccup).
-      try {
-        const c = localStorage.getItem(CACHE);
-        if (c) { const st = JSON.parse(c); lastIssue = (st && st.last_run && st.last_run.issue) || 0; paintStatus(st); }
-      } catch {}
-
-      let timer: ReturnType<typeof setTimeout>;
-      const schedule = (ms: number) => { clearTimeout(timer); if (document.hidden) return; timer = setTimeout(tick, ms); };
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) { clearTimeout(timer); tick(); } });
-
-      // ---- submit: chips fill the box, Send opens the prefilled GitHub issue ----
-      document.querySelectorAll<HTMLButtonElement>('.dk-chip').forEach((c) =>
-        c.addEventListener('click', () => { input.value = c.textContent || ''; input.focus(); })
-      );
-      let watching = false;
-      let watchUntil = 0;
-      let baselineIssue = 0;
-      send.addEventListener('click', () => {
-        const text = input.value.trim();
-        if (!text) { input.focus(); return; }
-        window.open(ISSUE_NEW(text), '_blank', 'noopener');
-        baselineIssue = lastIssue;
-        watching = true;
-        watchUntil = Date.now() + 210000; // watch ~3.5 min for their run to land
-        setDot('live');
-        // Honest in-progress shimmer (NOT faked per-stage checkmarks): a working
-        // pulse staggered across the row until the real result lands.
-        pills.forEach((p, i) => { setPill(i, 'working'); p.style.animationDelay = (i * 0.12) + 's'; });
-        if (statusEl) statusEl.textContent =
-          'Your request is running through the pipeline — confirm it on GitHub, then watch here…';
-        clearTimeout(timer); tick();
-      });
-
-      async function fetchStatus() {
-        const r = await fetch(STATUS + '?_=' + Date.now(), { cache: 'no-store' });
-        if (!r.ok) throw new Error(String(r.status));
-        return r.json();
-      }
-
-      async function tick() {
-        try {
-          const st = await fetchStatus();
-          const newIssue = (st && st.last_run && st.last_run.issue) || 0;
-          if (watching && newIssue > baselineIssue) {
-            watching = false;
-            applyStatus(st);
-            const sm = String(st.last_run.summary || '').replace(/[^A-Za-z0-9 .,!?'&()+:;#%-]/g, '').slice(0, 80);
-            if (statusEl) statusEl.textContent = `✅ Shipped${sm ? ` — “${sm}”` : ''}. The page below just repainted itself.`;
-          } else if (!watching) {
-            applyStatus(st);
-          } else {
-            setDot('live'); // still waiting on their run — keep the shimmer
-          }
-        } catch {
-          // Pages/network hiccup: keep the last-known state (cache already painted).
-          // Never show an error — that was the old failure mode.
-          if (!watching && !everPainted && statusEl) {
-            statusEl.textContent = 'Live sandbox — send a request above to run the pipeline.';
-          }
-          if (!watching) setDot('idle');
-        }
-        if (watching && Date.now() > watchUntil) {
-          watching = false;
-          try { const c = localStorage.getItem(CACHE); if (c) paintStatus(JSON.parse(c)); } catch {}
-          if (statusEl) statusEl.textContent =
-            'The agent is reviewing your request — check your GitHub issue for its reply (it may have declined). Recent run shown below.';
-        }
-        schedule(watching ? 6000 : 30000);
-      }
-
-      // ---- inline scene renderer (ported from the playground; textContent only) ----
-      const WEATHER: Record<string, any> = {
-        rain: { glyph: '💧', count: 26, fall: true, dur: [0.9, 1.8] },
-        snow: { glyph: '❄', count: 22, fall: true, dur: [4, 8] },
-        stars: { glyph: '✦', count: 24, fall: false, dur: [1.5, 3.5] },
-        fireflies: { glyph: '✨', count: 14, fall: false, dur: [1, 2.5] },
-      };
-      function loadScene() {
-        fetch(SCENE + '?_=' + Date.now(), { cache: 'no-store' }).then((r) => r.json()).then((scene: any) => {
-          const stage = $('dk-stage'), ground = $('dk-ground'),
-            objects = $('dk-objects'), weather = $('dk-weather'), marquee = $('dk-marquee');
-          if (!stage || !ground || !objects || !weather || !marquee) return;
-          stage.className = 'dk-stage sky-' + scene.sky;
-          ground.className = 'ground-' + scene.ground;
-          marquee.textContent = String(scene.marquee || '').slice(0, 240);
-          objects.replaceChildren();
-          for (const o of (scene.objects || []).slice(0, 12)) {
-            const span = document.createElement('span');
-            span.className = 'dk-obj s' + o.size;
-            span.textContent = String(o.emoji).slice(0, 16);
-            span.style.left = Math.min(100, Math.max(0, Number(o.x))) + '%';
-            span.style.top = Math.min(100, Math.max(0, Number(o.y))) + '%';
-            objects.appendChild(span);
-          }
-          weather.replaceChildren();
-          const spec = WEATHER[scene.weather];
-          if (spec) {
-            for (let i = 0; i < spec.count; i++) {
-              const p = document.createElement('span');
-              p.className = spec.fall ? 'dk-particle' : 'dk-twinkle';
-              p.textContent = spec.glyph;
-              p.style.left = Math.random() * 100 + '%';
-              if (!spec.fall) p.style.top = Math.random() * 70 + '%';
-              p.style.fontSize = 8 + Math.random() * 10 + 'px';
-              const dur = spec.dur[0] + Math.random() * (spec.dur[1] - spec.dur[0]);
-              p.style.animationDuration = dur + 's';
-              p.style.animationDelay = -Math.random() * dur + 's';
-              weather.appendChild(p);
-            }
-          }
-        }).catch(() => {});
-      }
-
-      loadScene();
-      tick();
-    })();
-
-    // "Start a pilot" form — POST to the m4 primary relay, silently fall back to
-    // the Cloudflare Worker. Success ONLY on a real 200 → never a false "sent";
-    // both unreachable → an honest "try again", never silent. No email in the DOM.
+    // Contact form: POST to the self-hosted relay. Success ONLY on a real 200 with
+    // success:true, so it never shows a false "sent"; a failure says so honestly.
+    // No email address in the DOM.
     (() => {
       const form = document.getElementById('contact-form') as HTMLFormElement | null;
       const statusEl = document.getElementById('cf-status');
       const btn = form?.querySelector('.cf-send') as HTMLButtonElement | null;
       if (!form || !statusEl || !btn) return;
 
-      async function tryRelay(url: string, payload: object, ms: number): Promise<boolean> {
-        if (!url || url.includes('REPLACE_WITH')) return false; // fallback not deployed yet
+      async function send(url: string, payload: object, ms: number): Promise<boolean> {
+        if (!url) return false;
         const ctl = new AbortController();
         const t = setTimeout(() => ctl.abort(), ms);
         try {
@@ -626,7 +171,7 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
           const data = await res.json().catch(() => ({}));
           return data.success === true;
         } catch {
-          return false; // timeout / network / CORS — relay down, try the next
+          return false; // timeout / network / CORS
         } finally {
           clearTimeout(t);
         }
@@ -646,17 +191,16 @@ const RELAY_FALLBACK = 'https://REPLACE_WITH_WORKER_SUBDOMAIN.workers.dev';
           company: fd.get('company'), message: fd.get('message'),
           botcheck: fd.get('botcheck') ? '1' : '',
         };
-        const ok = (await tryRelay(form.dataset.primary || '', payload, 6000)) ||
-                   (await tryRelay(form.dataset.fallback || '', payload, 8000));
+        const ok = await send(form.dataset.relay || '', payload, 8000);
 
         if (ok) {
           form.reset();
-          statusEl.textContent = "Sent. I'll get back to you personally — thanks.";
+          statusEl.textContent = "Sent. I'll reply by email. Thanks.";
           statusEl.classList.add('ok');
           btn.textContent = 'Sent ✓';
           return; // leave as confirmation; never a false success
         }
-        statusEl.textContent = "Couldn't send that just now — please try again in a moment.";
+        statusEl.textContent = "Couldn't send that just now. Please try again in a moment.";
         statusEl.classList.add('err');
         btn.disabled = false;
         btn.textContent = original;

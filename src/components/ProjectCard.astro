@@ -5,13 +5,16 @@ interface Props {
   domain?: string;
   stack: string[];
   slug: string;
+  status?: string;
 }
-const { title, summary, domain, stack, slug } = Astro.props;
+const { title, summary, domain, stack, slug, status } = Astro.props;
+const statusClass = status === 'Shelved' ? 'status-shelved' : status === 'Used before' ? 'status-before' : 'status-daily';
 ---
 
 <a class="card" href={`/projects/${slug}`}>
   {domain && <p class="domain">{domain}</p>}
   <h3>{title}</h3>
+  {status && <p class="card-status"><span class={`status ${statusClass}`}>{status}</span></p>}
   <p class="summary">{summary}</p>
   <div class="tags">
     {stack.slice(0, 5).map((s) => <span class="tag">{s}</span>)}

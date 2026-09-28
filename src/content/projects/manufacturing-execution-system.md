@@ -1,47 +1,33 @@
 ---
-title: Manufacturing Execution System
-role: Lead engineer & maintainer
-domain: Precision camera-module manufacturing
-summary: Full-stack shop-floor execution system tracking every unit through cleanroom, alignment, cure, and end-of-line test — replacing a tangle of spreadsheets.
-stack: [Next.js, TypeScript, Prisma, PostgreSQL, Redis, BullMQ, Docker]
+title: Production Tracking System (day job)
+role: Lead engineer
+domain: Camera-module manufacturing
+summary: The line needed one record of where each unit is and how it tested. I lead the web app that holds it; it runs in production at my job, with 1,400+ commits since February 2026.
+stack: [Next.js, React, TypeScript, Prisma, PostgreSQL, Redis, BullMQ, Tailwind, Docker]
+status: Used daily
 highlights:
-  - ~67-table Postgres schema modeling the full production lifecycle of a high-volume optics line
-  - Real-time floor dashboard whose kanban mirrors the physical station layout, not an abstract workflow
-  - Reporting and export APIs that generate daily production digests and per-operator activity automatically
-  - Role-based access control with code-enforced process gates so steps can't be skipped out of order
-year: 2025–2026
-order: 1
+  - "Problem: the line needed one record of every unit, from clean room to final optical test."
+  - "Built: a Next.js and React app with a live floor board, a 100+ table PostgreSQL schema, and background jobs on Redis and BullMQ."
+  - "Result: in production at my job, 1,400+ commits since February 2026, guarded by 500+ Vitest files and 60+ Playwright specs."
+year: "2026"
+order: 5
 ---
-
-A production-tracking platform for a high-volume precision camera-module line.
-It is the system of record for the whole operation: every unit is followed from
-cleanroom entry through active-alignment, adhesive dispense, oven cure, and
-end-of-line optical test, with full traceability at each station.
 
 ## The problem
 
-The line was being run on a patchwork of spreadsheets and tribal knowledge.
-There was no single source of truth for where a unit was, who had touched it, or
-why a batch had stalled. Quality data lived separately from production data, so
-reconciling "what shipped" against "what passed test" was a manual, error-prone
-chore.
+A camera-module production line needs one record of every unit: where it is,
+who touched it, and how it tested, from clean-room entry through alignment,
+glue, oven cure and final optical test.
 
 ## What I built
 
-- A relational schema (~67 tables) that models units, batches, stations,
-  operators, test results, and shipments — with the kanban board reflecting the
-  actual physical floor layout so operators see their station, not a flowchart.
-- A background job system for long-running and scheduled work (report
-  generation, data sync, reconciliation) on a durable queue.
-- Reporting endpoints that produce daily digests, live floor status, and
-  per-operator activity, plus production data exports for downstream analysis.
-- Process gates enforced in code: certain steps are blocked until their
-  prerequisite step is recorded, which closed a recurring class of out-of-order
-  defects that training alone never fixed.
+- **Front end.** A Next.js and React app styled with Tailwind, including a live
+  floor board that shows where each unit is.
+- **Data.** A PostgreSQL schema of 100+ tables, managed with Prisma.
+- **Jobs.** Reports and data sync run as background jobs on Redis and BullMQ.
+- **Tests.** Over 500 Vitest test files and over 60 Playwright end-to-end specs.
 
-## What I learned
+## Result
 
-Defaults are wrong for production. Database, queue, and runtime settings tuned
-for general use needed deliberate hardening for an always-on shop-floor system.
-And the most reliable way to enforce a process isn't a wiki page — it's a
-constraint the software won't let you violate.
+It runs in production at my job, with a canary copy for testing changes first.
+The code has 1,400+ commits since February 2026, about 200 of them in September.

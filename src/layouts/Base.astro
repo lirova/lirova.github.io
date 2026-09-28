@@ -6,7 +6,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = 'Engineering portfolio — full-stack platforms, machine-vision software, and AI automation.' } = Astro.props;
+const { title, description = 'Engineering portfolio — web front ends, full-stack apps, and the self-hosted tools I use every day.' } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
@@ -17,12 +17,11 @@ const year = new Date().getFullYear();
     <!-- Defense-in-depth CSP (GitHub Pages can't set headers, so meta is the only
          lever). All scripts ship as one external bundle → strict script-src 'self'.
          connect-src is the key directive — the only endpoints any script may reach:
-         the read-only gist + Pages feeds (playground/live-proof), and the two
-         self-hosted contact relays the "Start a pilot" form POSTs to (m4 Funnel +
-         the Cloudflare Worker fallback). Nothing else. -->
+         the self-hosted contact relay the contact form POSTs to (m4 Funnel).
+         Nothing else. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://gist.githubusercontent.com https://lirova.github.io https://m4.tail7d04cf.ts.net:10000 https://*.workers.dev; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://m4.tail7d04cf.ts.net:10000; base-uri 'none'; form-action 'none'"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
@@ -35,9 +34,9 @@ const year = new Date().getFullYear();
       <div class="wrap">
         <a href="/" class="brand"><span class="mark"></span>lirova</a>
         <nav class="nav">
-          <a href="/#demo">Demo</a>
           <a href="/#work">Work</a>
-          <a href="/#contact" class="btn btn-primary">Start a pilot</a>
+          <a href="/#demo">Demos</a>
+          <a href="/#contact" class="btn btn-primary">Contact</a>
         </nav>
       </div>
     </header>
@@ -50,14 +49,14 @@ const year = new Date().getFullYear();
       <div class="wrap">
         <span class="f-brand"><span class="mark"></span>lirova</span>
         <div class="f-links">
-          <a href="/#demo">Demo</a>
           <a href="/#work">Work</a>
-          <a href="/#contact">Start a pilot</a>
+          <a href="/#demo">Demos</a>
+          <a href="/#contact">Contact</a>
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
           <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub</a>
         </div>
-        <span class="f-meta">&copy; {year} lirova — self-hosted automation, built &amp; run in production.</span>
+        <span class="f-meta">&copy; {year} lirova</span>
       </div>
     </footer>
   </body>

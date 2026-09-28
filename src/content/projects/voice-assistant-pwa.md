@@ -1,38 +1,34 @@
 ---
-title: Voice-First Assistant PWA
+title: Voice Console
 role: Builder
-domain: Self-hosted AI / voice
-summary: A hands-free voice assistant that runs on self-hosted infrastructure, using a local LLM and neural text-to-speech to walk through a daily workflow during a commute.
-stack: [FastAPI, WebSockets, Local LLM, Neural TTS, PWA]
+domain: Voice web app
+summary: I run several AI coding sessions at once and couldn't read every reply. This phone page reads them aloud and takes my answer by voice; it made 1,318 spoken clips in one week.
+stack: [HTML/CSS/JS, MediaRecorder, Python, FastAPI, Local text-to-speech]
+status: Used daily
 highlights:
-  - Fully hands-free — voice in, voice out — designed to be usable while driving
-  - Runs against a self-hosted local LLM, so no conversation data leaves owned infrastructure
-  - Streams over WebSockets for low-latency back-and-forth instead of request/response round trips
-  - Layered text-to-speech with automatic fallback so the assistant always has a voice
+  - "Problem: with several AI coding sessions running, the replies piled up faster than I could read them."
+  - "Built: one phone web page (about 1,400 lines) that plays each reply as speech and records my spoken answer in the browser."
+  - "Result: used every day of the week of Sep 21-27, 2026: 1,318 spoken clips, up to 381 in a day."
 year: "2026"
-order: 4
+order: 2
 ---
 
-A progressive web app that turns a tedious daily form-filling chore into a
-spoken conversation. It runs entirely on self-hosted hardware and is built to be
-used hands-free — the original use case was completing a structured daily log
-during a commute, without touching the phone.
+## The problem
+
+I run several AI coding sessions at once. Their replies piled up on screens
+faster than I could read them, and I missed the ones waiting on me.
 
 ## What I built
 
-- A FastAPI backend speaking to clients over WebSockets, so the dialogue feels
-  conversational rather than a series of page loads.
-- Integration with a self-hosted local LLM for the reasoning, keeping all
-  conversation content on owned infrastructure instead of a third-party API.
-- A neural text-to-speech voice with a fallback chain, so a busy or unavailable
-  speech server degrades gracefully instead of going silent.
-- A PWA frontend that installs to the home screen and works as a first-class
-  app on mobile.
+- **Front end.** One page (about 1,400 lines of HTML/CSS/JS) built for a phone.
+  It lists replies by session, plays each as audio, and records my answer in the
+  browser with `getUserMedia` and `MediaRecorder`.
+- **Back end.** A small Python server turns text into speech with a model on my
+  own server, caches each clip so a replay is instant, and routes my spoken
+  answer back to the right session.
 
-## The idea
+## Result
 
-Plenty of tasks are simple but annoying enough that they get skipped. Wrapping
-one in a voice interface that meets you where you already are — in the car, with
-your hands busy — changes whether it actually gets done. The engineering
-challenge was latency and reliability: a voice assistant that stutters or stalls
-is worse than no assistant at all.
+I built it in July 2026. In the week of September 21 to 27, 2026 I used it every
+day: it made 1,318 spoken clips, up to 381 in one day. The first version, shown in
+the demo clip, was a voice form for a daily log; this page replaced it.

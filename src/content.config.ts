@@ -19,6 +19,8 @@ const projects = defineCollection({
     // Lower = earlier on the page.
     order: z.number().default(99),
     featured: z.boolean().default(true),
+    // Honest status, shown as a badge: 'Used daily' | 'Runs daily' | 'Used before' | 'Shelved'.
+    status: z.enum(['Used daily', 'Runs daily', 'Used before', 'Shelved']).optional(),
     // Optional external link (live demo, repo). Omit if private.
     link: z.string().url().optional(),
   }),
