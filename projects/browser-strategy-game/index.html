@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><!-- Defense-in-depth CSP (GitHub Pages can't set headers, so meta is the only
+         lever). All scripts ship as one external bundle → strict script-src 'self'.
+         connect-src is the key directive — the only endpoints any script may reach:
+         the self-hosted contact relay the contact form POSTs to (m4 Funnel).
+         Nothing else. --><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://m4.tail7d04cf.ts.net:10000; base-uri 'none'; form-action 'none'"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A strategy game that runs in any browser with no install, built in plain JavaScript. Result so far is steady output, not players; 980+ commits since July 2026."><meta name="generator" content="Astro v5.18.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Browser Strategy Game — Portfolio</title><link rel="stylesheet" href="/_astro/index.DCX_rWdv.css"></head> <body> <header class="site-header"> <div class="wrap"> <a href="/" class="brand"><span class="mark"></span>lirova</a> <nav class="nav"> <a href="/#work">Work</a> <a href="/#demo">Demos</a> <a href="/#contact" class="btn btn-primary">Contact</a> </nav> </div> </header> <main>  <article class="detail wrap"> <a href="/#work" class="back">← Back to work</a> <p class="domain" style="color:var(--accent-dim);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;margin:0 0 8px;">Game front end</p> <h1>Browser Strategy Game</h1> <div class="meta"> <span class="role">Solo developer</span> <span>2026</span> <span class="status status-daily" style="margin-left:0;">Used daily</span> <span>JavaScript (ES modules) · Canvas · HTML/CSS · Web Audio · Node test runner</span> </div> <ul class="highlights"> <li>Problem: I wanted a game with deep squad and base management that runs in a browser tab, with no install and no engine.</li><li>Built: about 27,000 lines across roughly 100 plain ES modules, no framework or build step, with canvas combat and a small save-sync server.</li><li>Result: 980+ commits since July 20, 2026, and about 40 rule test files. It has no outside players yet.</li> </ul> <div class="prose"> <h2 id="the-problem">The problem</h2>
+<p>I wanted a strategy game with real squad and base management that opens in a
+browser tab, with no install and no game engine.</p>
+<h2 id="what-i-built">What I built</h2>
+<ul>
+<li><strong>No framework.</strong> The client is plain JavaScript ES modules loaded straight by
+the browser. Each system (economy, combat, campaign, story) is its own module.</li>
+<li><strong>Canvas combat.</strong> Battles are drawn on a canvas in a side view, driven by a
+<code>requestAnimationFrame</code> loop, with Web Audio for sound.</li>
+<li><strong>Saves.</strong> Progress lives in the browser’s local storage. A small sync server
+on my home network keeps a copy, so a save follows me to another device.</li>
+<li><strong>Tests.</strong> The game rules run under Node’s built-in test runner, so I can
+change the numbers without clicking through the game to check them.</li>
+</ul>
+<h2 id="result">Result</h2>
+<p>980+ commits since July 20, 2026, most of them small daily changes, and about 40
+test files for the rules. It’s a personal build with no outside players yet, and
+the art is still in progress, so this page shows no screenshots.</p> </div>  </article>  </main> <footer class="site-footer"> <div class="wrap"> <span class="f-brand"><span class="mark"></span>lirova</span> <div class="f-links"> <a href="/#work">Work</a> <a href="/#demo">Demos</a> <a href="/#contact">Contact</a> <a href="/privacy">Privacy</a> <a href="https://github.com/lirova" target="_blank" rel="noopener">GitHub</a> </div> <span class="f-meta">&copy; 2026 lirova</span> </div> </footer> </body></html>
