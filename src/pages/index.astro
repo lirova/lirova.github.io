@@ -7,10 +7,10 @@ const projects = (await getCollection('projects'))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
 
-// The contact form POSTs to one self-hosted relay (m4, public over Tailscale
-// Funnel). No email address is ever in the page. The origin is allow-listed in
+// The contact form POSTs to one relay (a Cloudflare Pages function, since 2026-11-22; was m4 over Tailscale
+// Funnel until 11-22). No email address is ever in the page. The origin is allow-listed in
 // Base.astro's CSP connect-src.
-const RELAY = 'https://m4.tail7d04cf.ts.net:10000/lead';
+const RELAY = 'https://lirova-lead.pages.dev/lead';
 ---
 
 <Base title="lirova · Engineering Portfolio">
